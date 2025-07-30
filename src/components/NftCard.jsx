@@ -3,7 +3,9 @@ import Profile from "../assets/icons/profile.svg";
 import fire from "../assets/icons/fire.svg";
 import { CgReadme } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
-import { RiTeamFill } from "react-icons/ri";
+import { RiCurrencyFill, RiTeamFill } from "react-icons/ri";
+import { shortenAddress } from "thirdweb/utils";
+import { FaDollarSign } from "react-icons/fa";
 
 const NftCard = ({ ...props }) => {
 
@@ -25,51 +27,32 @@ const NftCard = ({ ...props }) => {
         <img src={fire} alt="" />
         <span className="font-semibold">{props.category}</span>
       </button>
-      {props.type === "dashboard" && (
+
       <div className="flex justify-between my-2 items-center"> 
           <div className="flex gap-1 justify-between w-full items-center">
-            <div className={props.classType === "collection" ? "hidden" : "flex gap-1 items-center"}>
+            <div className="flex gap-1 items-center">
               <img src={Profile} alt="" className="w-10 h-10" />
-              <span className="text-gray-900">{props.username}</span>
+              <span className="text-gray-900">{props.theme.length > 10 ? props.theme.slice(0, 10) + "..." : props.theme}</span>
             </div>
             <div className="">
-              <span className="font-semibold text-sm text-gray-900">{props.nftName.length > 10 ? props.nftName.slice(0, 10) + "..." : props.nftName}</span>
+              <span className="font-semibold text-sm text-gray-900">{props.title.length > 10 ? props.title.slice(0, 10) + "..." : props.title}</span>
             </div>
           </div>
       </div>
-      )}
-      {props.type === "collection" && (
-      <div className="flex justify-between my-2 items-center"> 
-          <div className="flex gap-1 justify-between w-full items-center">
-            <div className={"flex gap-1 items-center"}>
-              <span className="font-semibold text-sm text-gray-900">{props.nftName.length > 15 ? props.nftName.slice(0, 15) + "..." : props.nftName}</span>
-            </div>
-            <div className="flex gap-1 items-center">
-              <span className="text-gray-900"><RiTeamFill className="w-5 h-5" /></span>
-              <span className="text-gray-900">{props.holders}</span>
-            </div>
-          </div>
+
+      <div className="w-full flex items-center gap-1 justify-end">
+        <span className="font-semibold text-sm text-gray-900"><RiCurrencyFill/></span>
+        <span className="font-semibold text-sm text-gray-900">-</span>
+        <span className="font-semibold text-sm text-gray-900">{props.amount} ETH</span>
       </div>
-      )}
-      
-      {((props.type === "forYou" && props.classType !== "collection") || (props.type === "dashboard")) && (
+
         <button
-          onClick={() => navigate(`/blog_details/${props.address}`)}
-          className="w-full bg-[#9e74eb] cursor-pointer hover:opacity-90 text-white p-2 mt-3 flex justify-center gap-2 items-center rounded-lg"
-        >
-          <CgReadme className="w-5 h-5" />
-        <span className="font-semibold">Read More</span>
-      </button>
-      )}
-      {(props.type === "collection") && (
-        <button
-          onClick={() => navigate(`/blog_details/${props.address}`)}
+          onClick={() => navigate(`/blog_details/${props.id}`)}
           className="w-full bg-[#9e74eb] cursor-pointer hover:opacity-90 text-white p-2 mt-3 flex justify-center gap-2 items-center rounded-lg"
         >
           <CgReadme className="w-5 h-5" />
         <span className="font-semibold">View More</span>
       </button>
-      )}
     </div>
   );
 };

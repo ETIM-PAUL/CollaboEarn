@@ -22,7 +22,7 @@ const SideBar = () => {
         <span className="font-bold text-white">
           <img src={LogoLight} alt="" className="w-8 h-8" />
         </span>
-        <span className="font-bold text-black text-lg">Coinwrite</span>
+        <span className="font-bold text-black text-lg">StoryChain</span>
       </div>
 
       <div className="mt-2 pt-5 px-3">

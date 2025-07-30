@@ -6,20 +6,10 @@ import Loved from "../assets/icons/loved.svg";
 import Heart from "../assets/icons/heart.svg";
 import { PostsContext } from "../context/PostsContext";
 import { groupCoinsByCreator, groupedData } from "./utils";
+import { shortenAddress } from "thirdweb/utils";
+import { FaDollarSign, FaPen, FaVideo } from "react-icons/fa";
+import { GrGallery } from "react-icons/gr";
 
-const CreatorFlex = ({ ...props }) => {
-  return (
-    <div className="mr-4 flex items-center justify-between">
-      <div className="flex gap-1 items-center w-full">
-        <img src={Profile} alt="" className="w-10 h-10" />
-        <div className="grid gap-0">
-          <span className="font-medium text-gray-900">{props.username}</span>
-          <span className="text-gray-700">{props.posts} {props.posts?.length > 1 ? 'posts' : 'post'} </span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const FilterValue = ({ value, setFilter, filter }) => {
   return (
@@ -37,58 +27,13 @@ const FilterValue = ({ value, setFilter, filter }) => {
 const Dashboard = () => {
   const [filter, setFilter] = useState("Art");
   const [isLoading, setIsLoading] = useState(true);
-  const { coinDetails, allUsers } = useContext(PostsContext);
-  const [categories, setCategories] = useState({});
-
-  const getUserName = (address) => {
-    const user = allUsers.find((user) => user.userAddress.toLowerCase() === address.toLowerCase());
-
-    return user?.username;
-  }
-
-  const getPostCount = (address) => {
-    return coinDetails.filter((coin) => coin.creatorAddress.toLowerCase() === address.toLowerCase()).length;
-  }
-
-  const getCategory = async (ipfs) => {
-    try {
-      // Convert IPFS URL to HTTP URL
-      const httpUrl = ipfs.replace('ipfs://', 'https://ipfs.io/ipfs/');
-  
-      // Fetch metadata from IPFS
-      const metadata = await fetch(httpUrl);
-      const metadataJson = await metadata.json();
-      // Return the category
-      return metadataJson.properties?.category;
-    } catch (error) {
-      console.error('Error fetching metadata from IPFS:', error);
-      throw error;
-    }
-  };
-  
-  const fetchCategories = async () => {
-    const categoryMap = {};
-    if(coinDetails?.length > 0) {
-      for (let index = 0; index < coinDetails.length; index++) {
-        const element = coinDetails[index];
-        try {
-          const category = await getCategory(element?.tokenUri);
-          categoryMap[element?.tokenUri] = category;
-        } catch (error) {
-          console.error(`Error fetching category for post ${element?.id}:`, error);
-          categoryMap[element?.id] = 'Unknown';
-        }
-      }
-    }
-    setCategories(categoryMap);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 6000);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, [coinDetails]);
+  const { forYouPosts, allUsers } = useContext(PostsContext);
+  const dashboad = [
+    { title: "Total Post Content", value: "10", positive:"false", change:"8.3", icon:<FaPen className="text-white-400 text-2xl" />},
+    { title: "Total Art Content", value: "5", positive:"true", change:"8.3", icon:<GrGallery className="text-white-400 text-2xl" />},
+    { title: "Total Video Content", value: "2", positive:"false", change:"8.3", icon:<FaVideo className="text-white-400 text-2xl" />},
+    { title: "Total Tips", value: "2", positive:"true", change:"8.3", icon:<FaDollarSign className="text-white-400 text-2xl" />}
+  ]
 
   const SkeletonDashboard = () => (
     <div className="flex">
@@ -202,11 +147,11 @@ const Dashboard = () => {
     </div>
   );
 
-  if (isLoading && Object.keys(categories).length === 0) {
+  if (isLoading && forYouPosts?.length === 0) {
     return <SkeletonDashboard />;
   }
   
-  if (!isLoading && Object.keys(categories).length === 0) {
+  if (!isLoading && forYouPosts?.length === 0) {
     return <div className="flex bg-white justify-center items-center h-screen">
       <div className="text-2xl font-bold">No posts found</div>
     </div>;
@@ -218,45 +163,65 @@ const Dashboard = () => {
         
         <section className="p-3">
           <div className="w-full text-sm flex justify-between">
-            <span className="font-bold text-gray-900">Posts</span>
-            <span className="text-blue-500 mr-2 cursor-pointer">See more</span>
+            <span className="font-bold text-gray-900">Dashboard Analytics</span>
           </div>
-          <div className="w-full flex gap-3 mt-3">
-          {Object.keys(categories).length > 0 && Object.entries(categories).map(([key, value], index) => (
-            <FilterValue key={index} value={value} setFilter={setFilter} filter={filter} />
-            ))}
-          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-            {coinDetails?.map((coin,id) => (
-            <NftCard
-              key={id}
-              address={coin?.address}
-              nftImg={coin?.mediaContent?.previewImage?.medium}
-              category={categories[coin?.tokenUri] || 'Unknown'}
-              nftName={coin?.name}
-              holders={coin?.uniqueHolders}
-              username={getUserName(coin?.creatorAddress)}
-              loved={Loved}
-              notLoved={Heart}
-              type="dashboard"
-            />
+            {dashboad?.map((data,index) => (
+              <div key={index} className="bg-[#9e74eb] p-4 rounded-xl text-white shadow w-full flex flex-col gap-2">
+              <h4 className="text-sm text-[#fff] flex items-center gap-2">{data?.title}</h4>
+              <div className="flex items-center gap-3">
+                {data?.icon && <span>{data?.icon}</span>}
+                <p className="text-3xl font-extrabold tracking-tight">{data?.value}</p>
+              </div>
+              <span className={`text-sm flex items-center gap-1 ${data?.positive ? 'text-green-400' : 'text-red-400'}`}
+                >{data?.positive ? <span className="animate-bounce">▲</span> : <span className="animate-bounce">▼</span>} {data?.change} since last month
+              </span>
+            </div>
             ))}
           </div>
         </section>
 
         <section className="p-3">
           <div className="w-full text-sm flex justify-between">
+            <span className="font-bold text-gray-900">Top Themes</span>
+            <span className="text-blue-500 mr-2 cursor-pointer">See more</span>
+          </div>
+          <div className="w-full flex gap-3 mt-3">
+          {forYouPosts.length > 0 && forYouPosts.map((value, index) => (
+            <FilterValue key={index} value={value?.category} setFilter={setFilter} filter={filter} />
+            ))}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+            {forYouPosts?.map((post,id) => (
+            <NftCard
+              key={id}
+              nftImg={post?.nftImg}
+              category={post?.category}
+              title={post?.title}
+              theme={post?.theme}
+              amount={post?.amount}
+              loved={Loved}
+              notLoved={Heart}
+              type={post?.type}
+            />
+            ))}
+          </div>
+        </section>
+
+        {/* <section className="p-3">
+          <div className="w-full text-sm flex justify-between">
             <span className="font-bold text-gray-900">Top Creators</span>
             <span className="text-blue-500 mr-2 cursor-pointer">See more</span>
           </div>
           <div className="py-2 px-2 mt-3 flex w-full bg-white rounded-lg shadow">
-            <div className="flex w-full flex-wrap my-2 items-center gap-2">
-              {Object.keys(groupCoinsByCreator(coinDetails))?.map((coin) => (
-              <CreatorFlex key={coin} username={getUserName(coin)} posts={getPostCount(coin)} />
+            <div className="flex w-full flex-col my-2 gap-2">
+              {forYouPosts?.map((post) => (
+              <CreatorFlex key={post.id} creator={post.creator} posts={3} />
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
         
         <section className="px-3 pt-3 pb-24">
           <div className="w-full text-sm flex justify-between">
@@ -274,28 +239,13 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(groupedData(coinDetails, categories)).map((category, index) => (
-                <tr key={index} className="py-">
-                  <td className="px-4">
-                    <span>{category}</span>
-                  </td>
-                  <td className="px-4">
-                    <span>{groupedData(coinDetails, categories)[category].posts}</span>
-                  </td>
-                  {/* <td className="px-4 text-red-500">
-                    <span>-0.20%</span>
-                  </td> */}
-                  <td className="px-4">
-                    <span>{groupedData(coinDetails, categories)[category].creators.size}</span>
-                  </td>
-                </tr>
-                ))}
+                
               </tbody>
             </table>
           </div>
         </section>
       </div>
-      <SidePanel posts={coinDetails} />
+      <SidePanel posts={forYouPosts} />
     </div>
   );
 };

@@ -13,12 +13,12 @@ const SidePanel = ({ posts }) => {
           <span onClick={() => navigate('/for-you')} className="text-blue-500 text-sm cursor-pointer">See more</span>
         </div>
         <div className="flex flex-col gap-2">
-          {posts?.sort((a, b) => Number(b.marketCapDelta24h) - Number(a.marketCapDelta24h))?.map((post) => (
-          <div key={post?.address} className="flex items-center gap-2">
+          {posts?.sort((a, b) => Number(b.amount) - Number(a.amount))?.map((post) => (
+          <div key={post?.id} className="flex items-center gap-2">
           <img src={Profile} alt="" className="w-10 h-10" />
             <div>
-              <p className="text-sm text-gray-900">{post?.name.length > 20 ? post?.name.slice(0, 20) + "..." : post?.name}</p>
-              <p className="text-xs text-gray-500">{formatDateMoment(post?.createdAt)}</p>
+              <p className="text-sm text-gray-900">{post?.title.length > 20 ? post?.title.slice(0, 20) + "..." : post?.title}</p>
+              <p className="text-xs text-gray-500">{formatDateMoment(post?.date)}</p>
             </div>
           </div>
           ))}
