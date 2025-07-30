@@ -1,0 +1,176 @@
+$light: #fff;
+$dark: #191919;
+$search-input-width: 400px;
+$lightColor: #0f1419;
+$darkColor: #fff;
+$darkcard: #272d37;
+$light-input-bg: rgba(210, 217, 233, 0.4);
+$dark-input-bg: rgba(39, 45, 55, 0.4);
+$lightIcon: rgba(15, 20, 25, 0.85);
+$primary-color-light: rgba(255, 255, 255, 0.7);
+$primary-font-color-light: rgba(255, 255, 255, 0.5);
+
+@font-face {
+  font-family: "Outfit-Regular";
+  src: local("OutfitRegular"),
+    url("../fonts/Outfit-Regular.ttf") format("truetype");
+  font-weight: normal;
+}
+
+.font-light {
+  color: $lightColor !important;
+}
+.font-dark {
+  color: $darkColor !important;
+}
+.bg-ash {
+  background-color: $light-input-bg !important;
+}
+.input-dark,
+.dark-filter-bg {
+  background-color: $dark-input-bg !important;
+}
+.header-dark-bg {
+  background-color: $dark;
+}
+.font-weight {
+  font-weight: 500;
+}
+.default-font {
+  font-size: 12px;
+}
+.default-btn {
+  border: none;
+  background-color: #1364e9;
+}
+.blue {
+  color: #1364e9;
+}
+.icon-light {
+  color: $lightIcon;
+}
+
+.icon-dark {
+  color: $primary-font-color-light !important;
+}
+.content-light {
+  background-color: #d2d9e9;
+}
+.content-dark {
+  background-color: #1b1c1e;
+}
+
+.bg-white {
+  background-color: $light !important;
+}
+.-bg-dark {
+  background-color: $dark !important;
+}
+.primary-bg-light {
+  background-color: $primary-color-light !important;
+}
+.active-filter {
+  background-color: #1364e9;
+}
+.filter-btn {
+  opacity: 0.88;
+  border-radius: 70px;
+}
+.cardborder {
+  border: none !important;
+  border-radius: 25px !important;
+}
+.darkcard {
+  background-color: $darkcard !important;
+}
+.sun-light {
+  color: #1364e9;
+  background-color: white;
+  border-radius: 50%;
+}
+.sun-dark {
+  color: #1364e9;
+  background-color: #23262c;
+  border-radius: 50%;
+}
+.moon-light {
+  color: rgba(15, 20, 25, 0.54);
+}
+.moon-dark {
+  color: #1364e9;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.search-width {
+  width: $search-input-width !important;
+  height: 35px !important;
+  border: none !important;
+  font-family: Outfit-Regular;
+}
+
+.font-regular {
+  font-family: Outfit-Regular;
+}
+
+.mode-button {
+  border-radius: 20px;
+  box-sizing: border-box;
+  cursor: pointer;
+  height: 40px;
+  width: 89px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0);
+}
+.light-mood-button {
+  background-color: #d2d9e9;
+}
+.dark-mood-button {
+  background-color: #23262c;
+}
+
+.light-mood-button:focus {
+  outline: none; /* Not ideal for accessibility */
+}
+
+//hide scroll bar
+
+::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+::scroll-bar {
+  display: none;
+}
+
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white !important;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: white;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: white;
+}
+
+.dashboard-mobile{
+  box-shadow: 2px 1px 5px 1px rgba(15, 20, 25, 0.54);
+  border-radius: 20px;
+  position: absolute;
+  top:3.5rem;
+  width: 300px;
+  z-index: 10;
+}
+
+.dashboard-dark{
+  background: #272D37;
+}
+.dashboard-light{
+  background: $light;
+}

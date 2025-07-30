@@ -1,0 +1,14 @@
+@font-face {
+  font-family: "Outfit";
+  src: local("OutfitRegular"), url("./fonts/Outfit.ttf") format("truetype");
+  font-weight: normal;
+}
+
+@import url("./styles/custom.scss");
+
+body, .root {
+  font-family: Outfit !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
