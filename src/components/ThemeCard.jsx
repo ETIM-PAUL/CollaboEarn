@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import Profile from "../assets/icons/profile.svg";
 import fire from "../assets/icons/fire.svg";
 import { CgReadme } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
-import { RiCurrencyFill, RiTeamFill } from "react-icons/ri";
-import { shortenAddress } from "thirdweb/utils";
-import { FaDollarSign } from "react-icons/fa";
+import { MdPeople } from "react-icons/md";
 
-const NftCard = ({ ...props }) => {
-
+const ThemeCard = ({ ...props }) => {
   const [loved, setLoved] = useState(true);
   const navigate = useNavigate();
   return (
@@ -32,41 +28,27 @@ const NftCard = ({ ...props }) => {
           <div className="flex gap-1 justify-between w-full items-center">
             <div className="flex gap-1 items-center">
               {/* <img src={Profile} alt="" className="w-10 h-10" /> */}
-              <span className="text-gray-900">{props.view === "dashboard" ? props.theme : props.title.length > 20 ? props.title.slice(0, 20) + "..." : props.title}</span>
+              <span className="text-gray-900">{props.theme}</span>
             </div>
 
-            {props.view !== "dashboard" ?
-              <div className="">
-                <span className="font-semibold text-sm text-gray-900">{props.theme.length > 10 ? props.theme.slice(0, 10) + "..." : props.theme}</span>
-              </div>
-                :
               <div className="w-full flex items-center gap-1 justify-end">
-              <span className="font-semibold text-sm text-gray-900"><RiCurrencyFill/></span>
+              <span className="font-semibold text-sm text-gray-900"><MdPeople/></span>
               <span className="font-semibold text-sm text-gray-900">-</span>
-              <span className="font-semibold text-sm text-gray-900">{props.amount} ETH</span>
+              <span className="font-semibold text-sm text-gray-900">{props.collaborators}</span>
               </div>
-            }
 
           </div>
       </div>
 
-      {(props.view !== "dashboard" || props.view !== "themes") &&
-      <div className="w-full flex items-center gap-1 justify-end">
-        <span className="font-semibold text-sm text-gray-900"><RiCurrencyFill/></span>
-        <span className="font-semibold text-sm text-gray-900">-</span>
-        <span className="font-semibold text-sm text-gray-900">{props.amount} ETH</span>
-      </div>
-     }
-
         <button
-          onClick={() => navigate(`/blog_details/${props.id}`)}
+          onClick={() => navigate(`/publish_post/${props.id}`)}
           className="w-full bg-[#9e74eb] cursor-pointer hover:opacity-90 text-white p-2 mt-3 flex justify-center gap-2 items-center rounded-lg"
         >
           <CgReadme className="w-5 h-5" />
-        <span className="font-semibold">View More</span>
+        <span className="font-semibold">Collaborate</span>
       </button>
     </div>
   );
 };
 
-export default NftCard;
+export default ThemeCard;

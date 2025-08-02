@@ -3,9 +3,9 @@ import { Dialog, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { formatEther } from 'viem';
 import { ethers } from 'ethers';
-import { coinContract } from './utils';
+import { coinContract, contractAddress } from './utils';
 
-const TipModal = ({isOpen, onClose, getUserBalance, coinDetails, userCoinBalance }) => {
+const TipModal = ({post, isOpen, onClose, userCoinBalance }) => {
   const [amount, setAmount] = useState('');
   const [tipping, setTipping] = useState(false);
 
@@ -28,7 +28,7 @@ const TipModal = ({isOpen, onClose, getUserBalance, coinDetails, userCoinBalance
     const signer = provider.getSigner();
 
     // Connect to the contract
-    const contract = new ethers.Contract(coinDetails.address, abi, signer);
+    const contract = new ethers.Contract(contractAddress, abi, signer);
 
     // Function to send ERC20 tokens
       try {
@@ -37,12 +37,11 @@ const TipModal = ({isOpen, onClose, getUserBalance, coinDetails, userCoinBalance
         const amountInWei = ethers.utils.parseUnits(amount, 18);
 
         // Call the transfer function
-        const tx = await contract.transfer(coinDetails.creatorAddress, amountInWei);
+        const tx = await contract.tipCollaborator(post.id, amountInWei);
         console.log('Transaction sent:', tx.hash);
 
         // Wait for the transaction to be mined
         const receipt = await tx.wait();
-        getUserBalance(coinDetails.address);
         setTipping(false);
         toast.success('Tip sent successfully');
         onClose();
@@ -89,7 +88,7 @@ const TipModal = ({isOpen, onClose, getUserBalance, coinDetails, userCoinBalance
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Tip the Creator
+                  Tip the Collaborators
                 </Dialog.Title>
                 <div className="mt-4">
                   <input
@@ -103,7 +102,7 @@ const TipModal = ({isOpen, onClose, getUserBalance, coinDetails, userCoinBalance
                 </div>
 
                 <p className="text-sm mt-4 text-gray-500 mt-1">
-                Your balance: {userCoinBalance ? Number(formatEther(userCoinBalance)).toFixed(2) : 0} {coinDetails.symbol}
+                Your balance: {userCoinBalance ? userCoinBalance.displayValue : 0} {"ETH"}
               </p>
 
                 <div className="mt-4 flex justify-end gap-2">

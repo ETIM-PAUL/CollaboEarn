@@ -8,25 +8,16 @@ import { VscLoading } from "react-icons/vsc";
 import { GiArtificialIntelligence } from "react-icons/gi";
 // import { LMStudioClient } from "@lmstudio/sdk";
 import axios from "axios";
-import { DeployCurrency, getCoinCreateFromLogs, getCoins } from "@zoralabs/coins-sdk";
-import {parseEther } from "viem";
 import { base, baseSepolia } from "viem/chains";
-import { useAccount } from "wagmi";
 import { useNavigate } from "react-router-dom";
-import { createCoinCall } from "@zoralabs/coins-sdk";
-import { saveDeployedCoinAddress } from "../scripts/saveDeployedAddress";
 import { abi, coinContract } from "./utils";
 import { PostsContext } from "../context/PostsContext";
 import { ethers } from "ethers";
 import { useActiveAccount } from "thirdweb/react";
-const categories = [
-  "Tech", "Finance", "Art", "Culture", "Web3", "Gaming", "Education",
-  "Science","Health", "Travel","Food", "Entertainment", "Music",
-  "Movies", "Sports", "Politics", "Economy"
-];
+import { BiVideoPlus } from "react-icons/bi";
 
-const CreatePost = () => {
-  const [isUserSubscribed, setIsUserSubscribed] = useState(false);
+
+const CreatePost = ({type, theme}) => {
   const [promptRegister, setPromptRegister] = useState(false);
   const [title, setTitle] = useState("");
   const [banner, setBanner] = useState(null);
@@ -149,35 +140,6 @@ const CreatePost = () => {
     }
   };
 
-  const getAllCoins = async () => {
-    try {
-      // Replace with your contract address and ABI
-      const contractAddress = coinContract;
-  
-      // Initialize provider and contract
-      const provider = new ethers.providers.JsonRpcProvider(import.meta.env.VITE_RPC_URL);
-      const contract = new ethers.Contract(contractAddress, abi, provider);
-  
-      // Call the getAllCoins function
-      const coinAddresses = await contract.getAllCoins();
-      setCoinAddresses(coinAddresses);
-      
-      try {
-        const response = await getCoins({
-          coins: coinAddresses.map((address) => ({
-            chainId: base?.id,
-            collectionAddress: address
-          }))
-        });
-        setCoinsDetails(response?.data?.zora20Tokens)
-      } catch (error) {
-        console.log('error', error);
-      }
-    } catch (error) {
-      console.error('Error fetching coin addresses:', error);
-      throw error;
-    }
-  };
 
   const confirmAnalyze = async () => {
     setAiAnalyze(true);
@@ -215,10 +177,10 @@ const CreatePost = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 py-10 px-6 md:px-16">
       <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-8 space-y-6">
-        <h1 className="text-4xl font-extrabold text-gray-800 text-center">Create New Post</h1>
+        <h1 className="text-4xl font-extrabold text-gray-800 text-center">Collaborate and Earn</h1>
 
         {/* Title Input */}
-        <label className="block text-sm font-medium text-gray-600">Post Title</label>
+        <label className="block text-sm font-medium text-gray-600">{theme.type === "words" ? "Article Title" : theme.type === "artworks" ? "Artwork Name": "Video Title"}</label>
         <input
           type="text"
           placeholder="Enter blog title"
@@ -229,30 +191,55 @@ const CreatePost = () => {
 
 
         {/* Banner Image Upload */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-600">Banner Image</label>
-          <label className="flex items-center gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-500">
-            <ImagePlus className="w-6 h-6 text-gray-500" />
-            <span className="text-gray-700">Upload Image</span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </label>
-          {banner && (
-            <img
-              src={banner}
-              alt="Preview"
-              className="mt-2 rounded-xl w-full object-cover max-h-60 shadow-md"
-            />
-          )}
-        </div>
+        {theme.type !== "video" &&
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-600">{theme.type === "words" ? "Banner Image" : "Art Work"}</label>
+            <label className="flex items-center gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-500">
+              <ImagePlus className="w-6 h-6 text-gray-500" />
+              <span className="text-gray-700">Upload Image</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </label>
+            {banner && (
+              <img
+                src={banner}
+                alt="Preview"
+                className="mt-2 rounded-xl w-full object-cover max-h-60 shadow-md"
+              />
+            )}
+          </div>
+        }
+        {theme.type === "video" &&
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-600">{theme.type === "words" ? "Banner Image" : "Art Work"}</label>
+            <label className="flex items-center gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-500">
+              <BiVideoPlus className="w-6 h-6 text-gray-500" />
+              <span className="text-gray-700">Upload Clip</span>
+              <input
+                type="file"
+                accept="video/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </label>
+            {banner && (
+              <video
+                src={banner}
+                controls
+                alt="Preview"
+                className="mt-2 rounded-xl w-full object-contain max-h-60 shadow-md"
+              />
+            )}
+          </div>
+        }
 
         {/* SunEditor */}
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-2">Post Content</label>
+          <label className="block text-sm font-medium text-gray-600 mb-2">{theme.type === "words" ? "Article Content" : theme.type === "artworks" ? "Artwork Description" : "Video Description"}</label>
           <SunEditor
             height="300px"
             setContents={content}
@@ -276,7 +263,7 @@ const CreatePost = () => {
         <div className="flex justify-between">
 
         {/* AI Analyze Button */}
-        <div className="flex justify-end gap-2">
+        <div className="flex hidden justify-end gap-2">
             <button
               disabled={publishing || aiAnalyze}
                 onClick={() => content.length === 0 ? toast.error("Post can't be empty") : content.length < 100 ? toast.error("At least 100 words is needed to run AI Analysis") : setConfirmAnalyzeOpen(true)}

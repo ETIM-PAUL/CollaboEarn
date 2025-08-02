@@ -1,6 +1,7 @@
 import React from "react";
 import LogoLight from "../assets/icons/logo.svg";
 import Market from "../assets/icons/market.svg";
+import Setting from "../assets/icons/settings.svg";
 import Dashboard from "../assets/icons/dashboard.svg";
 import Wallet from "../assets/icons/wallet.svg";
 import Col from "../assets/icons/collection.svg";
@@ -11,6 +12,7 @@ import ColDark from "../assets/icons/collectionDark.svg";
 import SideBarItem from "./SideBarItem";
 import { useNavigate } from "react-router-dom";
 import { useActiveAccount } from "thirdweb/react";
+import { FaThemeco } from "react-icons/fa";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ const SideBar = () => {
       <div className="mt-2 pt-5 px-3">
         <SideBarItem title="Dashboard" lightIcon={Dashboard} darkIcon={DashboardDark} link="/dashboard" />
         <SideBarItem title="For You" lightIcon={Market} darkIcon={MarketDark} link="/for-you" />
+        <SideBarItem title="Themes" lightIcon={Setting} darkIcon={Setting} link="/themes" />
         {activeAccount && (
           <SideBarItem title="My Collection" lightIcon={Col} darkIcon={ColDark} link="/collection" />
         )}

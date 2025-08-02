@@ -16,6 +16,8 @@ import { PostsContext } from "./context/PostsContext";
 import { base, baseSepolia } from "viem/chains";
 import { autoConnect } from "thirdweb/wallets";
 import { clientThirdweb } from '../client';
+import Themes from './pages/themes.jsx'
+import CreateTheme from './pages/create_theme.jsx'
 
 function App() {
   const { setCoinAddresses, setCoinsDetails, setPlatformUsers } = useContext(PostsContext);
@@ -92,10 +94,13 @@ function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/for-you" element={<ForYou />} />
           <Route path="/collection" element={<Collection />} />
+          <Route path="/themes" element={<Themes />} />
           <Route path="/my-wallet" element={<MyWallet />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/blog_details/:id" element={<BlogDetails />} />
-          <Route path="/publish_post" element={<PublishPost />} />
+          <Route path="/theme_details/:id" element={<BlogDetails />} />
+          <Route path="/publish_post/:id" element={<PublishPost />} />
+          <Route path="/create_theme" element={<CreateTheme />} />
         </Routes>
       </div>
     </Router>

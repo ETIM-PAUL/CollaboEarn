@@ -11,23 +11,10 @@ import { FaDollarSign, FaPen, FaVideo } from "react-icons/fa";
 import { GrGallery } from "react-icons/gr";
 
 
-const FilterValue = ({ value, setFilter, filter }) => {
-  return (
-    <div
-      className={`w-1/6 flex justify-center py-1 rounded-lg cursor-pointer ${
-        filter === value ? "bg-[#9e74eb] text-white" : "bg-gray-200 hover:bg-[#9e74eb] text-gray-900 hover:text-white"
-      }`}
-      onClick={() => setFilter(value)}
-    >
-      <span>{value}</span>
-    </div>
-  );
-};
-
 const Dashboard = () => {
   const [filter, setFilter] = useState("Art");
   const [isLoading, setIsLoading] = useState(true);
-  const { forYouPosts, allUsers } = useContext(PostsContext);
+  const { forYouPosts } = useContext(PostsContext);
   const dashboad = [
     { title: "Total Post Content", value: "10", positive:"false", change:"8.3", icon:<FaPen className="text-white-400 text-2xl" />},
     { title: "Total Art Content", value: "5", positive:"true", change:"8.3", icon:<GrGallery className="text-white-400 text-2xl" />},
@@ -187,11 +174,7 @@ const Dashboard = () => {
             <span className="font-bold text-gray-900">Top Themes</span>
             <span className="text-blue-500 mr-2 cursor-pointer">See more</span>
           </div>
-          <div className="w-full flex gap-3 mt-3">
-          {forYouPosts.length > 0 && forYouPosts.map((value, index) => (
-            <FilterValue key={index} value={value?.category} setFilter={setFilter} filter={filter} />
-            ))}
-          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
             {forYouPosts?.map((post,index) => (
             <NftCard
@@ -199,6 +182,7 @@ const Dashboard = () => {
               nftImg={post?.nftImg}
               category={post?.category}
               title={post?.title}
+              view="dashboard"
               theme={post?.theme}
               amount={post?.amount}
               loved={Loved}
