@@ -104,11 +104,10 @@ const CreatePost = ({type, theme}) => {
       // Create metadata JSON
       const metadata = {
         name: title,
-        description: content,
+        content: content,
+        description:description,
         image: "ipfs://" + imageUrl.IpfsHash,
-        properties: {
-          category: category
-        }
+        category: category
       };
 
       const blob = new Blob([JSON.stringify(metadata)], { type: "application/json" });

@@ -39,7 +39,7 @@ export const plans = [
 ]
 
 export const coinContract = "0x1CB7160E2Ed02aAFe8Ee98160460BFf4D2caBB31"
-export const contractAddress = "0x1CB7160E2Ed02aAFe8Ee98160460BFf4D2caBB31"
+export const contractAddress = "0xF77025Db69882AD1c7f18D2A1C5B8821C091916C"
 
 export const groupedData = (data, categories) => {
     return data.reduce((acc, coin) => {
@@ -66,122 +66,428 @@ export const abi = [
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "address",
                 "name": "admin",
                 "type": "address"
+            }
+        ],
+        "name": "AdminAdded",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "contributionId",
+                "type": "uint256"
+            }
+        ],
+        "name": "ContributionApproved",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "contributionId",
+                "type": "uint256"
+            }
+        ],
+        "name": "ContributionRevoked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "contributionId",
+                "type": "uint256"
             },
             {
-                "indexed": false,
-                "internalType": "address",
-                "name": "previous_admin",
-                "type": "address"
-            }
-        ],
-        "name": "AdminUpdated",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "coin",
-                "type": "address"
-            }
-        ],
-        "name": "CoinDetailsStored",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
+                "indexed": true,
                 "internalType": "uint256",
-                "name": "current_amount",
+                "name": "themeId",
+                "type": "uint256"
+            }
+        ],
+        "name": "ContributionSubmitted",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "themeId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "creator",
+                "type": "address"
+            }
+        ],
+        "name": "ThemeCreated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "themeId",
                 "type": "uint256"
             },
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "previous_amount",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "perContributor",
                 "type": "uint256"
             }
         ],
-        "name": "CreatorSubscriptionAmountUpdated",
+        "name": "TipReceived",
         "type": "event"
     },
     {
-        "anonymous": false,
         "inputs": [
+            {
+                "internalType": "address",
+                "name": "admin",
+                "type": "address"
+            }
+        ],
+        "name": "addAdmin",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "contributionId",
+                "type": "uint256"
+            }
+        ],
+        "name": "approveContribution",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "collaboratorThemeEarnings",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "themeId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "ipfsLink",
+                "type": "string"
+            }
+        ],
+        "name": "contribute",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "contributions",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "themeId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "creator",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "dateCreated",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "ipfsLink",
+                "type": "string"
+            },
+            {
+                "internalType": "bool",
+                "name": "approved",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "ipfsUrl",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "contentType",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "maxCollaborators",
+                "type": "uint256"
+            }
+        ],
+        "name": "createTheme",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getAllContributions",
+        "outputs": [
             {
                 "components": [
                     {
-                        "internalType": "string",
-                        "name": "username",
-                        "type": "string"
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
                     },
                     {
-                        "internalType": "enum CoinWrite.SubscriptionTier",
-                        "name": "subscription_tier",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "string[]",
-                        "name": "interests",
-                        "type": "string[]"
+                        "internalType": "uint256",
+                        "name": "themeId",
+                        "type": "uint256"
                     },
                     {
                         "internalType": "address",
-                        "name": "userAddress",
+                        "name": "creator",
                         "type": "address"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "last_subscribed_at",
+                        "name": "dateCreated",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "ipfsLink",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "approved",
+                        "type": "bool"
                     }
                 ],
-                "indexed": false,
-                "internalType": "struct CoinWrite.User",
+                "internalType": "struct CollabContentPlatform.Contribution[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getAllThemes",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "ipfsUrl",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "creator",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "tips",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "contentType",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "dateCreated",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "collaborators",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "maxCollaborators",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address[]",
+                        "name": "allCollaborators",
+                        "type": "address[]"
+                    }
+                ],
+                "internalType": "struct CollabContentPlatform.Theme[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "themeId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getCollaborators",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
                 "name": "user",
-                "type": "tuple"
+                "type": "address"
             }
         ],
-        "name": "UserRegistered",
-        "type": "event"
-    },
-    {
-        "inputs": [],
-        "name": "BASIC_CREATOR_SUB_AMOUNT",
+        "name": "getUserContributions",
         "outputs": [
             {
-                "internalType": "uint256",
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "themeId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "creator",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "dateCreated",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "ipfsLink",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "approved",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct CollabContentPlatform.Contribution[]",
                 "name": "",
-                "type": "uint256"
+                "type": "tuple[]"
             }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "PREMIUM_CREATOR_SUB_AMOUNT",
-        "outputs": [
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
             {
                 "internalType": "uint256",
-                "name": "",
+                "name": "themeId",
                 "type": "uint256"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "THIRTY_DAYS_IN_SECONDS",
+        "name": "getUserThemeEarnings",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -195,65 +501,12 @@ export const abi = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "all_coins",
-        "outputs": [
-            {
                 "internalType": "address",
                 "name": "",
                 "type": "address"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "all_users",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "username",
-                "type": "string"
-            },
-            {
-                "internalType": "enum CoinWrite.SubscriptionTier",
-                "name": "subscription_tier",
-                "type": "uint8"
-            },
-            {
-                "internalType": "address",
-                "name": "userAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "last_subscribed_at",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_user",
-                "type": "address"
-            }
-        ],
-        "name": "checkSubscriptionStatus",
+        "name": "isAdmin",
         "outputs": [
             {
                 "internalType": "bool",
@@ -266,31 +519,46 @@ export const abi = [
     },
     {
         "inputs": [],
-        "name": "coin_admin",
+        "name": "nextContributionId",
         "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
             {
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
             }
         ],
-        "name": "creator_coins",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "nextThemeId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "contributionId",
+                "type": "uint256"
+            }
+        ],
+        "name": "revokeContribution",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "superadmin",
         "outputs": [
             {
                 "internalType": "address",
@@ -302,218 +570,70 @@ export const abi = [
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "getAllCoins",
-        "outputs": [
-            {
-                "internalType": "address[]",
-                "name": "",
-                "type": "address[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getAllUsers",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "username",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum CoinWrite.SubscriptionTier",
-                        "name": "subscription_tier",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "string[]",
-                        "name": "interests",
-                        "type": "string[]"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "userAddress",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "last_subscribed_at",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct CoinWrite.User[]",
-                "name": "",
-                "type": "tuple[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "themes",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "ipfsUrl",
+                "type": "string"
+            },
             {
                 "internalType": "address",
                 "name": "creator",
                 "type": "address"
-            }
-        ],
-        "name": "getCreatorCoins",
-        "outputs": [
-            {
-                "internalType": "address[]",
-                "name": "",
-                "type": "address[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            }
-        ],
-        "name": "getUserDetails",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "username",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum CoinWrite.SubscriptionTier",
-                        "name": "subscription_tier",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "string[]",
-                        "name": "interests",
-                        "type": "string[]"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "userAddress",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "last_subscribed_at",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct CoinWrite.User",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "username",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum CoinWrite.SubscriptionTier",
-                        "name": "subscription_tier",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "string[]",
-                        "name": "interests",
-                        "type": "string[]"
-                    }
-                ],
-                "internalType": "struct CoinWrite.RegisterUserParams",
-                "name": "_params",
-                "type": "tuple"
-            }
-        ],
-        "name": "registerUser",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "sendEth",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_coinAddress",
-                "type": "address"
-            }
-        ],
-        "name": "storeCoinDetails",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_newAdmin",
-                "type": "address"
-            }
-        ],
-        "name": "updateAdmin",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "user_details",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "username",
-                "type": "string"
-            },
-            {
-                "internalType": "enum CoinWrite.SubscriptionTier",
-                "name": "subscription_tier",
-                "type": "uint8"
-            },
-            {
-                "internalType": "address",
-                "name": "userAddress",
-                "type": "address"
             },
             {
                 "internalType": "uint256",
-                "name": "last_subscribed_at",
+                "name": "tips",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "contentType",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "dateCreated",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "collaborators",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "maxCollaborators",
                 "type": "uint256"
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "themeId",
+                "type": "uint256"
+            }
+        ],
+        "name": "tipTheme",
+        "outputs": [],
+        "stateMutability": "payable",
         "type": "function"
     }
 ]

@@ -10,7 +10,7 @@ import { GiArtificialIntelligence } from "react-icons/gi";
 import axios from "axios";
 import { base, baseSepolia } from "viem/chains";
 import { useNavigate } from "react-router-dom";
-import { abi, coinContract } from "./utils";
+import { abi, coinContract, contractAddress } from "./utils";
 import { PostsContext } from "../context/PostsContext";
 import { ethers } from "ethers";
 import { useActiveAccount } from "thirdweb/react";
@@ -28,14 +28,12 @@ const CreateThemePage = () => {
   const [banner, setBanner] = useState(null);
   const [category, setCategory] = useState(null);
   const [type, setType] = useState(null);
+  const [maxCollaborators, setMaxCollaborators] = useState(1);
   const [description, setDescription] = useState("");
   const [creatingTheme, setCreatingTheme] = useState(false);
-  const [publishedUrl, setPublishedUrl] = useState("");
-  const [publishedBannerUrl, setPublishedBannerUrl] = useState("");
   const activeAccount = useActiveAccount()
   const navigate = useNavigate()
 
-  const { addCoinAddress, setCoinAddresses, setCoinsDetails } = useContext(PostsContext);
   
   if (!activeAccount) {
     toast.error("Please connect your wallet");
@@ -79,7 +77,6 @@ const CreateThemePage = () => {
       }
 
       const data = await res.json();
-      setPublishedBannerUrl(`ipfs://${data?.IpfsHash}`)
       return data
     } catch (error) {
       console.error("Error uploading to IPFS:", error);
@@ -87,7 +84,7 @@ const CreateThemePage = () => {
     }
   }
 
-  const publishTheme = async() => {
+  const publishTheme = async(filename = "metadata.json") => {
     if (!name || !description || !banner || !category) {
       toast.error("Please fill in all fields");
       return;
@@ -104,12 +101,11 @@ const CreateThemePage = () => {
 
       // Create metadata JSON
       const metadata = {
-        name,
+        theme:name,
         description,
         image: "ipfs://" + imageUrl.IpfsHash,
-        properties: {
-          category: category
-        }
+        type:type,
+        category:category
       };
 
       const blob = new Blob([JSON.stringify(metadata)], { type: "application/json" });
@@ -125,15 +121,31 @@ const CreateThemePage = () => {
         },
       });
 
-
       if (response.status === 200) {
         const cid = response.data.IpfsHash;
         const contentUrl = `https://ipfs.io/ipfs/${cid}`;
-        setPublishedUrl(contentUrl);
+
+        // Interact with contract here
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+
+        const tx = await contract.createTheme(
+          contentUrl,
+          type,
+          maxCollaborators
+        );
+        await tx.wait();
+        toast.success("Theme created on-chain!");
+        navigate("/themes")
+        setCreatingTheme(false);
 
       } else {
         throw new Error("IPFS upload failed.");
       }
+
+      //interact with a contract function here
+
     } catch (error) {
       console.error("Error creating theme:", error);
       toast.error("Failed to create theme");
@@ -207,6 +219,17 @@ const CreateThemePage = () => {
             <option value={type} key={index}>{type.toUpperCase()}</option>
             )}
           </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-600">Theme Max Collaborators</label>
+          <input
+          type="number"
+          placeholder="Enter theme max collaborators"
+          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+          value={maxCollaborators}
+          onChange={(e) => setMaxCollaborators(e.target.value)}
+        />
         </div>
 
         <div>

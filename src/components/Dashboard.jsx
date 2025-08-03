@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { forYouPosts } = useContext(PostsContext);
   const dashboad = [
-    { title: "Total Post Content", value: "10", positive:"false", change:"8.3", icon:<FaPen className="text-white-400 text-2xl" />},
+    { title: "Total Words Content", value: "10", positive:"false", change:"8.3", icon:<FaPen className="text-white-400 text-2xl" />},
     { title: "Total Art Content", value: "5", positive:"true", change:"8.3", icon:<GrGallery className="text-white-400 text-2xl" />},
     { title: "Total Video Content", value: "2", positive:"false", change:"8.3", icon:<FaVideo className="text-white-400 text-2xl" />},
     { title: "Total Tips", value: "2", positive:"true", change:"8.3", icon:<FaDollarSign className="text-white-400 text-2xl" />}
@@ -157,7 +157,7 @@ const Dashboard = () => {
             {dashboad?.map((data,index) => (
               <div key={index} className="bg-[#9e74eb] p-4 rounded-xl text-white shadow w-full flex flex-col gap-2">
               <h4 className="text-sm text-[#fff] flex items-center gap-2">{data?.title}</h4>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 {data?.icon && <span>{data?.icon}</span>}
                 <p className="text-3xl font-extrabold tracking-tight">{data?.value}</p>
               </div>

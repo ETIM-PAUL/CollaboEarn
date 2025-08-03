@@ -9,7 +9,7 @@ const SidePanel = ({ posts }) => {
     <div className="w-3/12 min-h-screen bg-white rounded-md mt-4 shadow-lg p-4">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">Top Posts</h2>
+          <h2 className="text-lg font-bold text-gray-900">Top Contents</h2>
           <span onClick={() => navigate('/for-you')} className="text-blue-500 text-sm cursor-pointer">See more</span>
         </div>
         <div className="flex flex-col gap-2">

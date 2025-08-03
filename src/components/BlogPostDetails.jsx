@@ -73,10 +73,7 @@ const BlogPostDetails = ({ post, theme }) => {
                 <span>{formatDate(post.date)}</span>
               </div>
             </div>
-            
-            <span className='w-fit font-back text-lg'>
-            {post.theme}
-            </span>
+
           </div>
           {/* Description */}
           <div className="mb-6 text-lg text-gray-700">{post.type === "words" ? post.content : post?.description}</div>

@@ -9,8 +9,8 @@ import MyWallet from './pages/my_wallet.jsx'
 import Settings from './pages/settings.jsx'
 import BlogDetails from './pages/blog_details.jsx'
 import PublishPost from './pages/publish_post.jsx'
-import { abi, coinContract } from "./components/utils";
-import { ethers } from "ethers";
+import { abi, coinContract, contractAddress } from "./components/utils";
+import { BigNumber, ethers } from "ethers";
 import { getCoins } from "@zoralabs/coins-sdk";
 import { PostsContext } from "./context/PostsContext";
 import { base, baseSepolia } from "viem/chains";
@@ -20,32 +20,47 @@ import Themes from './pages/themes.jsx'
 import CreateTheme from './pages/create_theme.jsx'
 
 function App() {
-  const { setCoinAddresses, setCoinsDetails, setPlatformUsers } = useContext(PostsContext);
+  const { setAllThemes, setCoinsDetails, setPlatformUsers } = useContext(PostsContext);
 
-  const getAllCoins = async () => {
+  async function getThemeInfo(link) {
+    const url = link;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  }
+
+  const getAllThemes = async () => {
     try {
-      // Replace with your contract address and ABI
-      const contractAddress = coinContract;
-  
       // Initialize provider and contract
       const provider = new ethers.providers.JsonRpcProvider(import.meta.env.VITE_RPC_URL);
       const contract = new ethers.Contract(contractAddress, abi, provider);
-  
-      // Call the getAllCoins function
-      const coinAddresses = await contract.getAllCoins();
-      setCoinAddresses(coinAddresses);
-      
-      try {
-        const response = await getCoins({
-          coins: coinAddresses.map((address) => ({
-            chainId: base?.id,
-            collectionAddress: address
-          }))
-        });
-        setCoinsDetails(response?.data?.zora20Tokens)
-      } catch (error) {
-        console.log('error', error);
-      }
+
+      // Call the getAllThemes function
+      const allThemes = await contract.getAllThemes();
+      console.log(allThemes);
+
+      // Map each theme to a promise that resolves to the formatted object
+      const formattedThemes = await Promise.all(
+        allThemes.map(async (element) => {
+          const res = await getThemeInfo(element?.ipfsUrl);
+          return {
+            id: BigNumber.from(element?.id._hex).toString(),
+            nftImg: res?.image,
+            theme: res?.theme,
+            description: res?.description,
+            amount: BigNumber.from(element?.tips._hex).toString(),
+            creator: element?.creator,
+            category: res?.category,
+            type: element?.contentType,
+            collaborators: BigNumber.from(element?.collaborators._hex).toString(),
+            maxCollaborators: BigNumber.from(element?.maxCollaborators._hex).toString(),
+            date: BigNumber.from(element?.dateCreated._hex).toString(),
+          };
+        })
+      );
+
+      setAllThemes(formattedThemes);
+
     } catch (error) {
       console.error('Error fetching coin addresses:', error);
       throw error;
@@ -79,8 +94,8 @@ function App() {
 
   
   useEffect(() => {
-    getAllCoins();
-    getAllUsers();
+    getAllThemes();
+    // getAllUsers();
     connectAutomated();
   }, []);
 

@@ -42,7 +42,6 @@ const NftCard = ({ ...props }) => {
                 :
               <div className="w-full flex items-center gap-1 justify-end">
               <span className="font-semibold text-sm text-gray-900"><RiCurrencyFill/></span>
-              <span className="font-semibold text-sm text-gray-900">-</span>
               <span className="font-semibold text-sm text-gray-900">{props.amount} ETH</span>
               </div>
             }
@@ -53,7 +52,6 @@ const NftCard = ({ ...props }) => {
       {(props.view !== "dashboard" || props.view !== "themes") &&
       <div className="w-full flex items-center gap-1 justify-end">
         <span className="font-semibold text-sm text-gray-900"><RiCurrencyFill/></span>
-        <span className="font-semibold text-sm text-gray-900">-</span>
         <span className="font-semibold text-sm text-gray-900">{props.amount} ETH</span>
       </div>
      }

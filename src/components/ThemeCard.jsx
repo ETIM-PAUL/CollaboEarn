@@ -9,7 +9,13 @@ const ThemeCard = ({ ...props }) => {
   const navigate = useNavigate();
   return (
     <div className="py-2 gro mb-4 px-2 bg-white rounded-lg shadow relative">
-      <img src={props.nftImg} alt="" className="w-full h-48 object-cover" />
+      <img 
+      src={
+        props.nftImg.startsWith("ipfs://")
+          ? props.nftImg.replace("ipfs://", "https://ipfs.io/ipfs/")
+          : props.nftImg
+      }
+      alt="" className="w-full h-48 object-cover" />
       <img
         src={loved ? props.loved : props.notLoved}
         alt=""
@@ -33,7 +39,6 @@ const ThemeCard = ({ ...props }) => {
 
               <div className="w-full flex items-center gap-1 justify-end">
               <span className="font-semibold text-sm text-gray-900"><MdPeople/></span>
-              <span className="font-semibold text-sm text-gray-900">-</span>
               <span className="font-semibold text-sm text-gray-900">{props.collaborators}</span>
               </div>
 

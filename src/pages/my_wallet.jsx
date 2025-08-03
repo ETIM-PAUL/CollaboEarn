@@ -10,6 +10,7 @@ import { useDisconnect, useActiveWallet } from "thirdweb/react";
 import { useConnectModal } from "thirdweb/react";
 import { clientThirdweb } from '../../client';
 import { useActiveWalletChain } from "thirdweb/react";
+import { etherlinkTestnet } from 'viem/chains';
 
 const MyWallet = () => {
   const { connect } = useConnectModal();
@@ -18,12 +19,13 @@ const MyWallet = () => {
   const activeChain = useActiveWalletChain();
   const wallet = useActiveWallet();
 
-  const account = useActiveAccount();
+
   const { data: balance, isLoading } = useWalletBalance({
     client:clientThirdweb,
     chain:activeChain,
-    address: account?.address ?? "",
+    address: activeAccount?.address,
   });
+  console.log("activeChain", activeChain)
 
 
   const handleCopy = () => {
@@ -31,7 +33,7 @@ const MyWallet = () => {
   }
 
   async function handleConnect() {
-    const wallet = await connect({ clientThirdweb });
+    const wallet = await connect({ clientThirdweb, chain: etherlinkTestnet, theme:"dark", title: "CollaboEarn - Connect, Collaborate and start earning" });
   }
 
   const formatAddress = (addr) => {

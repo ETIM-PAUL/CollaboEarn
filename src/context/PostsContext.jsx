@@ -51,44 +51,7 @@ export const PostsProvider = ({ children }) => {
       content: VideoClip
     }]
     );
-  const [themes, setThemes] = useState([
-    {
-      id: 1,
-      nftImg: NFT1,
-      theme:"Modern Culinary Art",
-      description: "Upload work of arts",
-      amount: "12.5",
-      creator: "0x1b6e16403b06a51C42Ba339E356a64fE67348e92",
-      category: "Art",
-      type: "artworks",
-      collaborators:3,
-      date: "June 10, 2025"
-    },
-    {
-      id: 2,
-      nftImg: NFT2,
-      theme: "Etherlink SDK Practice",
-      description: "Deploying contracts on Etherlink",
-      amount: "12.5",
-      creator: "0x9d4eF81F5225107049ba08F69F598D97B31ea644",
-      category: "Web3",
-      type: "words",
-      collaborators: 2,
-      date: "June 18, 2025"
-    }, 
-    {
-      id: 3,
-      nftImg: NFT1,
-      theme: "DanceHall Steps Faceoff",
-      title: "Step Boss",
-      amount: "12.5",
-      creator: "0x9d4eF81F5225107049ba08F69F598D97B31ea644",
-      category: "Web3",
-      type: "video",
-      collaborators: 1,
-      date: "June 18, 2025",
-    }]
-    );
+  const [themes, setThemes] = useState([]);
   const [collectionPosts, setCollectionPosts] = useState([]);
   const [coinDetails, setCoinDetails] = useState([]);
   const [allCoinAddresses, setAllCoinAddresses] = useState([]);
@@ -99,8 +62,8 @@ export const PostsProvider = ({ children }) => {
     setAllCoinAddresses((prevCoinAddresses) => [...prevCoinAddresses, newCoinAddress]);
   };
 
-  const setCoinAddresses = (coinAddresses) => {
-    setAllCoinAddresses(coinAddresses);
+  const setAllThemes = (themes) => {
+    setThemes(themes);
   };
 
   const setCoinsDetails = (coinsDetails) => {
@@ -116,7 +79,7 @@ export const PostsProvider = ({ children }) => {
   };
 
   return (
-    <PostsContext.Provider value={{ forYouPosts, themes, collectionPosts, addCoinAddress, setCoinAddresses, allCoinAddresses, setCoinsDetails, addCoinDetails, coinDetails, setPlatformUsers, allUsers }}>
+    <PostsContext.Provider value={{ forYouPosts, themes, collectionPosts, addCoinAddress, setAllThemes, allCoinAddresses, setCoinsDetails, addCoinDetails, coinDetails, setPlatformUsers, allUsers }}>
       {children}
     </PostsContext.Provider>
   );

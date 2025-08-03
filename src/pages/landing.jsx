@@ -3,9 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ArrowRightIcon, CheckBadgeIcon } from "@heroicons/react/24/outline";
 import heroImage from "../assets/coinwrite-hero.png"; // Replace with actual hero image path
 import HomePageHeader from "../components/HomePageHeader";
-import { useAccount } from "wagmi";
 import { toast } from "react-toastify";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useNavigate } from "react-router-dom";
 import RegisterModal from '../components/RegisterModal';
 import { plans } from "../components/utils";
@@ -15,6 +13,8 @@ import { FaPlaneSlash, FaWallet, FaShieldAlt, FaCoins, FaGlobe, FaClock, FaRocke
 import { TbCancel, TbPlane } from "react-icons/tb";
 import { BiSolidHourglassTop } from "react-icons/bi";
 import { MdOutlineFlightTakeoff, MdOutlineFlightLand } from "react-icons/md";
+import { useActiveAccount, useActiveWallet, useActiveWalletChain, useConnectModal, useWalletBalance } from "thirdweb/react";
+import { clientThirdweb } from "../../client";
 
 const categories = [
   "Adventure", "Sci-Fi", "Fantasy", "Romance", "Mystery", "Horror", "History",
@@ -50,9 +50,10 @@ const steps = [
 ];
 
 function LandingPage() {
-  const { open } = useWeb3Modal()
   const navigate = useNavigate()
-  const { isConnected } = useAccount();
+  const { connect } = useConnectModal();
+
+  const account = useActiveAccount();
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const registerUser = (title) => {
@@ -72,6 +73,10 @@ function LandingPage() {
     return user?.username;
   }
 
+  async function handleConnect() {
+    const wallet = await connect({ clientThirdweb });
+  }
+
 
   return (
       <div className="px-8">
@@ -88,7 +93,7 @@ function LandingPage() {
               <p className="text-gray-600 text-lg whitespace-pre-line break-words text-start">
               StoryChain is a Web3 storytelling platform where your imagination turns into collectible and monetizable stories powered by Etherlink.
               </p>
-              <button onClick={() => isConnected ? navigate('/publish_story') : open()} className="w-[200px] cursor-pointer text-center bg-[#9e74eb] hover:opacity-90 text-white px-6 py-3 rounded-xl transition duration-300 shadow-md">
+              <button onClick={() => account?.address ? navigate('/publish_story') : handleConnect()} className="w-[200px] cursor-pointer text-center bg-[#9e74eb] hover:opacity-90 text-white px-6 py-3 rounded-xl transition duration-300 shadow-md">
                 <span className="text-sm">Start Writing</span>
               </button>
             </div>
@@ -120,9 +125,9 @@ function LandingPage() {
 
         {/* How It Works Section */}
       <section id="how-it-works" className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold text-center mb-4">How StoryChain Works</h2>
+        <h2 className="text-3xl font-bold text-center mb-4">How ContentChain Works</h2>
         <p className="text-center text-gray-400 mb-12">
-          Inspired by a theme, submit your thoughts and earn as a collaborator.
+          Inspired by a theme, submit your inspo (artwork, words or clips) and earn as a collaborator.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step, idx) => (
