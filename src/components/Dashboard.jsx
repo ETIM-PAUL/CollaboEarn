@@ -28,7 +28,7 @@ const Dashboard = () => {
   const dashboad = [
     { title: "Total Words Content", value: forYouPosts.filter((item) => item?.type === "words")?.length ?? 0, positive:"false", change:"8.3", icon:<FaPen className="text-white-400 text-2xl" />},
     { title: "Total Art Content", value: forYouPosts.filter((item) => item?.type === "artworks")?.length ?? 0, positive:"true", change:"8.3", icon:<GrGallery className="text-white-400 text-2xl" />},
-    { title: "Total Video Content", value: forYouPosts.filter((item) => item?.type === "video")?.length ?? 0, positive:"false", change:"8.3", icon:<FaVideo className="text-white-400 text-2xl" />},
+    { title: "Total Video Content", value: forYouPosts.filter((item) => item?.type === "clips")?.length ?? 0, positive:"false", change:"8.3", icon:<FaVideo className="text-white-400 text-2xl" />},
     { title: "Total Tips", value: ethers.utils.formatEther(totalTips.toString()), positive:"true", change:"8.3", icon:<span className="text-white-400 text-2xl">XTZ</span>}
   ]
 

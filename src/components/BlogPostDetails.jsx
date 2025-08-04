@@ -138,7 +138,7 @@ console.log(post)
               </button>
             }
 
-            {(post?.approved === false) &&
+            {(post?.approved === false && activeAccount?.address.toLowerCase() !== "0x097753B3EF40ca0676B8d95f59303AcC5f3f42cF".toLowerCase()) &&
               <button
                 disabled={true}
                 className="w-fit cursor-not-allowed bg-[#9e74eb] hover:opacity-90 text-white p-2 mt-3 flex justify-center gap-2 items-center rounded-lg"

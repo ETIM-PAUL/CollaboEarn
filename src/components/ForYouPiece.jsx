@@ -9,6 +9,7 @@ import { FaBookReader, FaDollarSign, FaMoneyBill } from "react-icons/fa";
 import { GiEyeball, GiTakeMyMoney } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { ethers } from 'ethers';
+import { ipfsToHttp } from "./utils";
 
 
   const PostSkeleton = () => (
@@ -63,7 +64,7 @@ import { ethers } from 'ethers';
       <div className="relative group cursor-pointer" onClick={onPlayPause}>
         <video
         ref={videoRef}
-        src={videoUrl}
+        src={ipfsToHttp(videoUrl)}
         controls={true}
         // poster={thumbnail}
         autoPlay={isPlaying}
