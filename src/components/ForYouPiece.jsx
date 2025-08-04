@@ -227,7 +227,7 @@ import { useNavigate } from "react-router-dom";
     const [hasMore, setHasMore] = useState(true);
     const observer = useRef();
 
-    const { forYouPosts } = useContext(PostsContext);
+    const { approvedPosts:forYouPosts } = useContext(PostsContext);
 
     // Simulate API call
     const loadPosts = useCallback(async (pageNum) => {

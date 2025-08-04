@@ -94,7 +94,7 @@ function App() {
           };
         })
       );
-      console.log("formattedContents", formattedContents)
+
 
       setAllContributions(formattedContents);
     } catch (error) {

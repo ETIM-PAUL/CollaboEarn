@@ -1,17 +1,15 @@
-export const formatDate = (dateString) => {
-    try {
-      const [year, month, day] = dateString.split('T')[0].split('-');
-      const date = new Date(year, month - 1, day); // month is 0-based in JS
-      
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    } catch (error) {
-      console.error('Error formatting date:', error);
-      return 'Invalid Date';
-    }
+export const formatDate = (timestamp) => {
+    if (!timestamp) return "";
+    // If timestamp is a string, convert to number
+    const ts = Number(timestamp);
+    // Convert seconds to milliseconds
+    const date = new Date(ts * 1000);
+    // Format as YYYY-MM-DD
+    return date.toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
 export const groupCoinsByCreator = (coins) => {

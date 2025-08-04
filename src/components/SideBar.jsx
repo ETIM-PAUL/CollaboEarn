@@ -24,7 +24,7 @@ const SideBar = () => {
         <span className="font-bold text-white">
           <img src={LogoLight} alt="" className="w-8 h-8" />
         </span>
-        <span className="font-bold text-black text-lg">StoryChain</span>
+        <span className="font-bold text-black text-lg">CollaboEarn</span>
       </div>
 
       <div className="mt-2 pt-5 px-3">
@@ -32,7 +32,7 @@ const SideBar = () => {
         <SideBarItem title="For You" lightIcon={Market} darkIcon={MarketDark} link="/for-you" />
         <SideBarItem title="Themes" lightIcon={Setting} darkIcon={Setting} link="/themes" />
         {activeAccount && (
-          <SideBarItem title="My Collection" lightIcon={Col} darkIcon={ColDark} link="/collection" />
+          <SideBarItem title={activeAccount?.address.toLowerCase() === "0x097753B3EF40ca0676B8d95f59303AcC5f3f42cF".toLowerCase() ? "Collaborations" : "My Collection"} lightIcon={Col} darkIcon={ColDark} link="/collection" />
         )}
       </div>
       <div className="mt-5 pt-2 px-3">

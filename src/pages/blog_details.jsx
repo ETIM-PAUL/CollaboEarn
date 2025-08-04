@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import SideBar from '../components/SideBar'
 import TopHeader from '../components/TopHeader'
@@ -9,9 +9,17 @@ const BlogDetails = () => {
     const { id } = useParams();
 
     const { forYouPosts, themes } = useContext(PostsContext)
+    const [loading, setLoading] = useState(true);
     const selectedContent = forYouPosts.find((item) => Number(item?.id) === Number(id))
+
+    useEffect(() => {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+    }, [])
     
-    if (!selectedContent) {
+    
+    if (!selectedContent && !loading) {
       return (
         <div>
         <div className="w-full bg-[#f6f2ff]">

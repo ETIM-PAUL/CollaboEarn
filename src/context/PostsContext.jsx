@@ -14,13 +14,8 @@ export const PostsProvider = ({ children }) => {
     );
   const [themes, setThemes] = useState([]);
   const [coinDetails, setCoinDetails] = useState([]);
-  const [allCoinAddresses, setAllCoinAddresses] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
 
-
-  const addCoinAddress = (newCoinAddress) => {
-    setAllCoinAddresses((prevCoinAddresses) => [...prevCoinAddresses, newCoinAddress]);
-  };
 
   const setAllThemes = (themes) => {
     setThemes(themes);
@@ -28,6 +23,16 @@ export const PostsProvider = ({ children }) => {
 
   const setAllContributions = (contents) => {
     setForYouPosts(contents);
+  };
+
+  const updateContributionStatus = (id, status) => {
+    setForYouPosts(prevPosts =>
+      prevPosts.map(post =>
+        Number(post.id) === Number(id)
+          ? { ...post, approved: status }
+          : post
+      )
+    );
   };
 
   const setCoinsDetails = (coinsDetails) => {
@@ -42,8 +47,10 @@ export const PostsProvider = ({ children }) => {
     setCoinDetails((prevCoinDetails) => [...prevCoinDetails, newCoinDetails]);
   };
 
+  const approvedPosts = forYouPosts.filter((item) => item.approved === true);
+
   return (
-    <PostsContext.Provider value={{ forYouPosts, themes, addCoinAddress, setAllThemes, setAllContributions, allCoinAddresses, setCoinsDetails, addCoinDetails, coinDetails, setPlatformUsers, allUsers }}>
+    <PostsContext.Provider value={{ forYouPosts, approvedPosts, themes, updateContributionStatus, setAllThemes, setAllContributions, setCoinsDetails, addCoinDetails, coinDetails, setPlatformUsers, allUsers }}>
       {children}
     </PostsContext.Provider>
   );

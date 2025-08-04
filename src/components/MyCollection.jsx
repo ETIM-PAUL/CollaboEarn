@@ -25,7 +25,6 @@ const MyCollection = ({ classType }) => {
   }, [])
   
 
-
   if (!activeAccount?.address) {
     return (
       <div>
@@ -37,7 +36,7 @@ const MyCollection = ({ classType }) => {
     </div>
     )}
 
-  if (forYouPosts.length > 0 && userContents.length === 0) {
+  if (forYouPosts.length > 0 && !userContents.length && activeAccount?.address.toLowerCase() !== "0x097753B3EF40ca0676B8d95f59303AcC5f3f42cF".toLowerCase()) {
     return (
       <div>
       <div className="w-full bg-[#f6f2ff]">
