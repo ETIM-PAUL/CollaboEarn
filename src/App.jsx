@@ -37,7 +37,6 @@ function App() {
 
       // Call the getAllThemes function
       const allThemes = await contract.getAllThemes();
-      console.log(allThemes);
 
       // Map each theme to a promise that resolves to the formatted object
       const formattedThemes = await Promise.all(
@@ -67,7 +66,7 @@ function App() {
     }
   };
 
-  const getAllUsers = async () => {
+  const getAllContributions = async () => {
     try {
       const contractAddress = coinContract;
   

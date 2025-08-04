@@ -25,7 +25,6 @@ const MyWallet = () => {
     chain:activeChain,
     address: activeAccount?.address,
   });
-  console.log("activeChain", activeChain)
 
 
   const handleCopy = () => {

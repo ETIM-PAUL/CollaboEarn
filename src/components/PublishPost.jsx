@@ -10,7 +10,7 @@ import { GiArtificialIntelligence } from "react-icons/gi";
 import axios from "axios";
 import { base, baseSepolia } from "viem/chains";
 import { useNavigate } from "react-router-dom";
-import { abi, coinContract } from "./utils";
+import { abi, coinContract, contractAddress } from "./utils";
 import { PostsContext } from "../context/PostsContext";
 import { ethers } from "ethers";
 import { useActiveAccount } from "thirdweb/react";
@@ -26,8 +26,6 @@ const CreatePost = ({type, theme}) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [aiAnalyze, setAiAnalyze] = useState(false);
-  const [publishedUrl, setPublishedUrl] = useState("");
-  const [publishedBannerUrl, setPublishedBannerUrl] = useState("");
   const [confirmAnalyzeOpen, setConfirmAnalyzeOpen] = useState(false);
   const [optimizedContentOpen, setOptimizedContentOpen] = useState(false);
   const [optimizedContent, setOptimizedContent] = useState("");
@@ -35,7 +33,7 @@ const CreatePost = ({type, theme}) => {
   const navigate = useNavigate()
 
   const { addCoinAddress, setCoinAddresses, setCoinsDetails } = useContext(PostsContext);
-  
+  console.log(theme)
   if (!activeAccount) {
     toast.error("Please connect your wallet");
     navigate("/collection");
@@ -58,7 +56,8 @@ const CreatePost = ({type, theme}) => {
       const blob = await response.blob();
       
       // Create a File object from the blob
-      const file = new File([blob], 'image.jpg', { type: blob.type });
+      const fileExtension = blob.type.split('/')[1];
+      const file = new File([blob], `file.${fileExtension}`, { type: blob.type });
       
       const url = "https://api.pinata.cloud/pinning/pinFileToIPFS";
       const formData = new FormData();
@@ -78,7 +77,6 @@ const CreatePost = ({type, theme}) => {
       }
 
       const data = await res.json();
-      setPublishedBannerUrl(`ipfs://${data?.IpfsHash}`)
       return data
     } catch (error) {
       console.error("Error uploading to IPFS:", error);
@@ -96,7 +94,9 @@ const CreatePost = ({type, theme}) => {
 
     try {
       // Upload banner image to IPFS
-      const imageUrl = await uploadImageToIPFS(banner);
+      
+      let imageUrl =  await uploadImageToIPFS(banner);
+
       
       // Upload content to IPFS
       const url = "https://api.pinata.cloud/pinning/pinFileToIPFS";
@@ -104,10 +104,9 @@ const CreatePost = ({type, theme}) => {
       // Create metadata JSON
       const metadata = {
         name: title,
-        content: content,
-        description:description,
-        image: "ipfs://" + imageUrl.IpfsHash,
-        category: category
+        image: theme.type === "words" ? "ipfs://" + imageUrl.IpfsHash : "",
+        content: theme.type === "words" ? content : "ipfs://" + imageUrl.IpfsHash,
+        description: theme.type !== "words" ? content : ""
       };
 
       const blob = new Blob([JSON.stringify(metadata)], { type: "application/json" });
@@ -127,14 +126,25 @@ const CreatePost = ({type, theme}) => {
       if (response.status === 200) {
         const cid = response.data.IpfsHash;
         const contentUrl = `https://ipfs.io/ipfs/${cid}`;
-        setPublishedUrl(contentUrl);
+        // Interact with contract here
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, abi, signer);
 
+        const tx = await contract.contribute(
+          Number(theme?.id),
+          contentUrl
+        );
+        await tx.wait();
+        toast.success("Contribution created and pending admin approval!");
+        navigate("/dashboard")
+        setPublishing(false);
       } else {
         throw new Error("IPFS upload failed.");
       }
     } catch (error) {
-      console.error("Error creating coin:", error);
-      toast.error("Failed to create coin");
+      console.error("Error collaborating:", error);
+      toast.error("Failed to create collaboration");
       setPublishing(false);
     }
   };
