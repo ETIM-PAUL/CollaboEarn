@@ -96,7 +96,11 @@ import { useNavigate } from "react-router-dom";
           return (
             <div className="relative group overflow-hidden">
               <img 
-                src={post.nftImg} 
+                src={
+                  (post?.type === "artworks" ? post?.content : post.nftImg).startsWith("ipfs://")
+                    ? (post?.type === "artworks" ? post?.content : post.nftImg).replace("ipfs://", "https://ipfs.io/ipfs/")
+                    : post.nftImg
+                }
                 alt={post.title}
                 className="w-full h-64 object-cover transition-transform group-hover:scale-105"
               />
@@ -122,7 +126,7 @@ import { useNavigate } from "react-router-dom";
         case 'words':
           return (
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 border-l-4 border-indigo-500">
-              <p className="text-gray-700 leading-relaxed mb-4">{post.content}</p>
+              <p className="text-gray-700 leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: post?.content?.length > 200 ?  post?.content?.slice(0,200) + "....." : post?.content}} />
               <div className="flex items-center justify-between">
                 <span className="text-indigo-600 font-medium text-sm">{post.readTime}</span>
                 <button onClick={()=>navigate(`/blog_details/${post.id}`)} className="text-indigo-600 cursor-pointer hover:text-indigo-800 font-medium text-sm transition-colors">
@@ -151,7 +155,11 @@ import { useNavigate } from "react-router-dom";
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <img 
-                src={post.nftImg} 
+                src={
+                  (post?.type === "artworks" ? post?.content : post.nftImg).startsWith("ipfs://")
+                    ? (post?.nftImg === "" ? post?.content : post.nftImg).replace("ipfs://", "https://ipfs.io/ipfs/")
+                    : post.nftImg
+                }
                 alt={post.author}
                 className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
               />
@@ -221,29 +229,6 @@ import { useNavigate } from "react-router-dom";
 
     const { forYouPosts } = useContext(PostsContext);
 
-
-    if (loading && forYouPosts.length === 0) {
-      return (
-        <div className="h-screen overflow-y-scroll space-y-10 w-full px-3 mt-4 pb-5 bg-white rounded-md">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
-          {[...Array(4)].map((_, index) => (
-            <div key={index} className="animate-pulse">
-            <div className="bg-gray-200 rounded-lg h-40"></div>
-            <div className="mt-2 bg-gray-200 h-4 w-3/4 rounded"></div>
-            <div className="mt-2 bg-gray-200 h-4 w-1/2 rounded"></div>
-          </div>
-          ))}
-          </div>
-        </div>
-    );
-    }
-  
-    if (!loading && forYouPosts.length === 0) {
-      return <div className="flex bg-white justify-center items-center h-screen">
-        <div className="text-2xl font-bold">No posts found</div>
-      </div>;
-    }
-
     // Simulate API call
     const loadPosts = useCallback(async (pageNum) => {
       setLoading(true);
@@ -265,7 +250,7 @@ import { useNavigate } from "react-router-dom";
       
       setHasMore(newPosts.length === 3);
       setLoading(false);
-    }, []);
+    }, [forYouPosts]);
 
     // Intersection Observer for infinite scroll
     const lastPostElementRef = useCallback(node => {
@@ -290,6 +275,29 @@ import { useNavigate } from "react-router-dom";
     useEffect(() => {
       loadPosts(1);
     }, [loadPosts]);
+
+    // Now, after all hooks, you can do early returns:
+    if (loading && forYouPosts.length === 0) {
+      return (
+        <div className="h-screen overflow-y-scroll space-y-10 w-full px-3 mt-4 pb-5 bg-white rounded-md">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
+            {[...Array(4)].map((_, index) => (
+              <div key={index} className="animate-pulse">
+                <div className="bg-gray-200 rounded-lg h-40"></div>
+                <div className="mt-2 bg-gray-200 h-4 w-3/4 rounded"></div>
+                <div className="mt-2 bg-gray-200 h-4 w-1/2 rounded"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+  
+    if (!loading && forYouPosts.length === 0) {
+      return <div className="flex bg-white justify-center items-center h-screen">
+        <div className="text-2xl font-bold">No posts found</div>
+      </div>;
+    }
 
     return (
       <div className="mt-4 w-full bg-white rounded-md">

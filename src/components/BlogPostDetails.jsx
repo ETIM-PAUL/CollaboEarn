@@ -30,7 +30,7 @@ const BlogPostDetails = ({ post, theme }) => {
   } else if (post.type === "artworks" || post.type === "words") {
     mainContent = (
       <img
-        src={post.type === "artworks" ? post.content : post.nftImg}
+        src={(post?.type === "artworks" ? post?.content : post.nftImg).replace("ipfs://", "https://ipfs.io/ipfs/")}
         alt={post.title}
         className="w-full h-[60vh] object-cover rounded-3xl shadow-lg"
       />
@@ -76,7 +76,7 @@ const BlogPostDetails = ({ post, theme }) => {
 
           </div>
           {/* Description */}
-          <div className="mb-6 text-lg text-gray-700">{post.type === "words" ? post.content : post?.description}</div>
+          <div className="mb-6 text-lg text-gray-700"  dangerouslySetInnerHTML={{ __html: (post.type === "words" ? post?.content : post?.description)}} />
         </div>
       </div>
 

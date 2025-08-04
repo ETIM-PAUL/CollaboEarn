@@ -20,7 +20,7 @@ import Themes from './pages/themes.jsx'
 import CreateTheme from './pages/create_theme.jsx'
 
 function App() {
-  const { setAllThemes, setCoinsDetails, setPlatformUsers } = useContext(PostsContext);
+  const { setAllThemes, setAllContributions, setPlatformUsers } = useContext(PostsContext);
 
   async function getThemeInfo(link) {
     const url = link;
@@ -59,6 +59,7 @@ function App() {
       );
 
       setAllThemes(formattedThemes);
+      return formattedThemes;
 
     } catch (error) {
       console.error('Error fetching coin addresses:', error);
@@ -66,17 +67,36 @@ function App() {
     }
   };
 
-  const getAllContributions = async () => {
+  const getAllContributions = async (themes) => {
     try {
-      const contractAddress = coinContract;
-  
       // Initialize provider and contract
       const provider = new ethers.providers.JsonRpcProvider(import.meta.env.VITE_RPC_URL);
       const contract = new ethers.Contract(contractAddress, abi, provider);
   
       // Call the getAllCoins function
-      const coinAddresses = await contract.getAllUsers();
-      setPlatformUsers(coinAddresses);
+      const allContributions = await contract.getAllContributions();
+      console.log("allContributions", allContributions)
+      // Map each theme to a promise that resolves to the formatted object
+      const formattedContents = await Promise.all(
+        allContributions.map(async (element) => {
+          const res = await getThemeInfo(element?.ipfsLink);
+          return {
+            id: BigNumber.from(element?.id._hex).toNumber(),
+            nftImg: res?.image,
+            theme:  BigNumber.from(element?.themeId._hex).toString(),
+            type: themes.find((item) => item?.id === BigNumber.from(element?.themeId._hex).toString())?.type,
+            title: res?.name,
+            description: res?.description,
+            approved: element?.approved,
+            creator: element?.creator,
+            content:res?.content,
+            date: BigNumber.from(element?.dateCreated._hex).toString(),
+          };
+        })
+      );
+      console.log("formattedContents", formattedContents)
+
+      setAllContributions(formattedContents);
     } catch (error) {
       console.log('error', error);
     }
@@ -93,8 +113,7 @@ function App() {
 
   
   useEffect(() => {
-    getAllThemes();
-    // getAllUsers();
+    getAllThemes().then((res) => getAllContributions(res));
     connectAutomated();
   }, []);
 
