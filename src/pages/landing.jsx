@@ -26,25 +26,25 @@ const steps = [
   {
     number: "01",
     title: "Facilitators Add Theme",
-    description: "Facilitators on StoryChain create story themes to guide writers and spark collaborative storytelling.",
+    description: "Facilitators on CollaboEarn create story themes to guide writers and spark collaborative storytelling.",
     icon: <MdOutlineFlightTakeoff className="text-2xl" />
   },
   {
     number: "02",
-    title: "Writers Contribute Stories",
-    description: "Writers explore themes and submit creative stories aligned with them. Multiple entries allowed.",
+    title: "Collaborators Contribute Content",
+    description: "Collaborators explore themes and submit creative content aligned with them. Multiple entries allowed.",
     icon: <BiSolidHourglassTop className="text-2xl" />
   },
   {
     number: "03",
     title: "Approval & Publishing",
-    description: "Facilitators review and approve high-quality stories, publishing them to the public for reading.",
+    description: "Facilitators review and approve high-quality content, publishing them to the public for reading.",
     icon: <FaCoins className="text-2xl" />
   },
   {
     number: "04",
     title: "Readers Tip the Theme",
-    description: "The community reads published stories and tips their favorite themes. Tips are shared among all approved collaborators.",
+    description: "The community view published content (artworks, clips, words) and tips their favorite themes. Tips are shared among all approved collaborators.",
     icon: <FaWallet className="text-2xl" />
   }
 ];
@@ -88,17 +88,17 @@ function LandingPage() {
           <div className="mx-auto grid md:grid-cols-2 gap-16 items-center">
             <div className="gap-6 flex flex-col items-start max-w-[400px]">
               <h2 className="w-full h-full overflow-hidden text-4xl leading-12 font-extrabold text-left whitespace-pre-line break-words opacity-100 visible">
-                Share Stories. Earn Tokens. Inspire the World.
+                Share Content. Earn Tokens. Inspire the World.
               </h2>
               <p className="text-gray-600 text-lg whitespace-pre-line break-words text-start">
-              StoryChain is a Web3 storytelling platform where your imagination turns into collectible and monetizable stories powered by Etherlink.
+              CollaboEarn is a Web3 storytelling platform where your imagination turns into collectible and monetizable content (artworks, clips and words) powered by Etherlink.
               </p>
               <button onClick={() => account?.address ? navigate('/publish_story') : handleConnect()} className="w-[200px] cursor-pointer text-center bg-[#9e74eb] hover:opacity-90 text-white px-6 py-3 rounded-xl transition duration-300 shadow-md">
                 <span className="text-sm">Start Writing</span>
               </button>
             </div>
             <div className="hidden md:block">
-              <img src={heroImage} alt="StoryChain Illustration" className="w-full h-auto" />
+              <img src={heroImage} alt="CollaboEarn Illustration" className="w-full h-auto" />
             </div>
           </div>
         </section>
@@ -189,7 +189,7 @@ function LandingPage() {
         </div>
 
         <footer className="py-10 text-center text-gray-500">
-          &copy; 2025 StoryChain. All rights reserved.
+          &copy; 2025 CollaboEarn. All rights reserved. Powered by Etherlink Chain
         </footer>
 
         <RegisterModal 

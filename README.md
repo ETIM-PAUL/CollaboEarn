@@ -2,6 +2,8 @@
 
 **CollaboEarn** is a collaborative content creation platform where **writers, illustrators, video creators**, web3 community and **fans** co-create interactive content around admin-created themes. Each contribution to a theme earns royalties from user tips, making collaboration both creative and rewarding.
 
+Contributions (words, artworks, clips) are all stored on IPFS (and then the ipfs uri is stored onchain) helping reduce the size of the stored data onchain.
+
 ---
 
 ## Key Features
@@ -31,7 +33,7 @@
   - [`Collabo.sol`](./contracts/Collabo.sol) deployed and verified on the **Etherlink Testnet** The fast, fair and (nearly) free L2.
 
   (https://testnet.explorer.etherlink.com/address/0xF77025Db69882AD1c7f18D2A1C5B8821C091916C)
-  
+
   - Handles theme creation, contributions, approval, tipping, and revenue sharing
 
 - **Wallet Connection**  
@@ -77,13 +79,13 @@ Use [Thirdweb Connect Wallet](https://portal.thirdweb.com/react/react.connectwal
 - `createTheme(...)` Admin-only: Creates a new theme
 - `submitContribution(...)` Community members submit content
 - `approveContribution(...)` Admin approves/rejects a submission
-- `tipTheme(themeId)` Send ETH tips to a theme; contract auto-splits among contributors
+- `tipTheme(themeId)` Send XTZ tips to a theme; contract auto-splits among contributors
 
-> \ud83e\udde0 Tip: Contributions are stored via IPFS and referenced in the smart contract.
+Tip: Contributions are stored via IPFS and referenced in the smart contract.
 
 ---
 
-## \ud83e\uddea Testnet Info
+## Testnet Info
 
 - **Chain:** Etherlink Testnet  
 - **Block Explorer:** [explorer-testnet.etherlink.com](https://explorer-testnet.etherlink.com)  
@@ -91,12 +93,12 @@ Use [Thirdweb Connect Wallet](https://portal.thirdweb.com/react/react.connectwal
 
 ---
 
-## \ud83e\udd1d Contributing
+## Contributing
 
 We welcome contributions! Fork the repo, create a branch, and open a PR.
 
 ---
 
-## \ud83d\udcc4 License
+## License
 
-MIT \u00a9 2025 \u2014 CollaboEarn Team
+MIT CollaboEarn Team

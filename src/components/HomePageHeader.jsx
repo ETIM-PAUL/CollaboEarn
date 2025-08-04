@@ -7,7 +7,7 @@ const HomePageHeader = () => {
   return (
     <header className="flex items-center justify-between py-6">
         <div className='flex items-center space-x-10'>
-          <h1 className="text-xl font-bold text-[#9e74eb]">StoryChain</h1>
+          <h1 className="text-xl font-bold text-[#9e74eb]">CollaboEarn</h1>
           <nav className="space-x-6 text-sm text-gray-700">
             <a href="#categories" className="hover:text-black">Categories</a>
             <a href="#explore" className="hover:text-black">Explore</a>
