@@ -1,18 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { formatEther } from 'viem';
 import { ethers } from 'ethers';
 import { abi, coinContract, contractAddress } from './utils';
+import { PostsContext } from '../context/PostsContext';
 
 const TipModal = ({post, isOpen, onClose, userCoinBalance }) => {
   const [amount, setAmount] = useState('');
   const [tipping, setTipping] = useState(false);
+  const { setAllThemes } = useContext(PostsContext);
+
+
+  async function getThemeInfo(link) {
+    const url = link;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  }
+
+  const getAllThemes = async () => {
+    try {
+      // Initialize provider and contract
+      const provider = new ethers.providers.JsonRpcProvider(import.meta.env.VITE_RPC_URL);
+      const contract = new ethers.Contract(contractAddress, abi, provider);
+
+      // Call the getAllThemes function
+      const allThemes = await contract.getAllThemes();
+
+      // Map each theme to a promise that resolves to the formatted object
+      const formattedThemes = await Promise.all(
+        allThemes.map(async (element) => {
+          const res = await getThemeInfo(element?.ipfsUrl);
+          return {
+            id: BigNumber.from(element?.id._hex).toString(),
+            nftImg: res?.image,
+            theme: res?.theme,
+            description: res?.description,
+            amount: BigNumber.from(element?.tips._hex).toString(),
+            creator: element?.creator,
+            category: res?.category,
+            type: element?.contentType,
+            collaborators: BigNumber.from(element?.collaborators._hex).toString(),
+            maxCollaborators: BigNumber.from(element?.maxCollaborators._hex).toString(),
+            date: BigNumber.from(element?.dateCreated._hex).toString(),
+          };
+        })
+      );
+
+      setAllThemes(formattedThemes);
+
+    } catch (error) {
+      console.error('Error fetching coin addresses:', error);
+      throw error;
+    }
+  };
 
   const handleTip = async() => {
      // Request wallet connection
      await window.ethereum.request({ method: 'eth_requestAccounts' });
-     
+
     // Initialize provider and signer
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -32,6 +79,7 @@ const TipModal = ({post, isOpen, onClose, userCoinBalance }) => {
         // Wait for the transaction to be mined
         const receipt = await tx.wait();
         setTipping(false);
+        getAllThemes();
         toast.success('Tip sent successfully');
         onClose();
         return receipt;

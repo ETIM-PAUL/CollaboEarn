@@ -9,18 +9,16 @@ import MyWallet from './pages/my_wallet.jsx'
 import Settings from './pages/settings.jsx'
 import BlogDetails from './pages/blog_details.jsx'
 import PublishPost from './pages/publish_post.jsx'
-import { abi, coinContract, contractAddress } from "./components/utils";
+import { abi, contractAddress } from "./components/utils";
 import { BigNumber, ethers } from "ethers";
-import { getCoins } from "@zoralabs/coins-sdk";
 import { PostsContext } from "./context/PostsContext";
-import { base, baseSepolia } from "viem/chains";
 import { autoConnect } from "thirdweb/wallets";
 import { clientThirdweb } from '../client';
 import Themes from './pages/themes.jsx'
 import CreateTheme from './pages/create_theme.jsx'
 
 function App() {
-  const { setAllThemes, setAllContributions, setPlatformUsers } = useContext(PostsContext);
+  const { setAllThemes, setAllContributions } = useContext(PostsContext);
 
   async function getThemeInfo(link) {
     const url = link;

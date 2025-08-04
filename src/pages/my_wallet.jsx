@@ -31,8 +31,6 @@ const MyWallet = () => {
 
   }
 
-
-
   const handleCopy = () => {
     navigator.clipboard.writeText(address);
   }

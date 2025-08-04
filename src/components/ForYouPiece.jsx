@@ -110,7 +110,7 @@ import { ethers } from 'ethers';
             </div>
           );
         
-        case 'video':
+        case 'clips':
           return (
             <VideoPlayer 
               thumbnail={post.nftImg}
@@ -191,11 +191,12 @@ import { ethers } from 'ethers';
             </div>
             
             <button 
-              className={`transition-colors ${
+              className={`transition-colors flex gap-1 ${
                 isBookmarked ? 'text-yellow-500' : 'text-gray-500 hover:text-yellow-500'
               }`}
               onClick={() => handleTip(post)}
             >
+              <span>Tip</span>
               <GiTakeMyMoney className={`w-6 h-6 text-green-500 cursor-pointer`} />
             </button>
           </div>

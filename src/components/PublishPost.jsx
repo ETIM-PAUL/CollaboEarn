@@ -5,7 +5,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Eye, ImagePlus, PlusIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { VscLoading } from "react-icons/vsc";
-import { GiArtificialIntelligence } from "react-icons/gi";
+import { GiArtificialIntelligence, GiMoneyStack } from "react-icons/gi";
 // import { LMStudioClient } from "@lmstudio/sdk";
 import axios from "axios";
 import { base, baseSepolia } from "viem/chains";
@@ -14,7 +14,9 @@ import { abi, coinContract, contractAddress } from "./utils";
 import { PostsContext } from "../context/PostsContext";
 import { ethers } from "ethers";
 import { useActiveAccount } from "thirdweb/react";
-import { BiVideoPlus } from "react-icons/bi";
+import { BiCategory, BiVideoPlus } from "react-icons/bi";
+import { FaHashtag } from "react-icons/fa";
+import { MdDescription, MdPeople } from "react-icons/md";
 
 
 const CreatePost = ({type, theme}) => {
@@ -32,13 +34,54 @@ const CreatePost = ({type, theme}) => {
   const activeAccount = useActiveAccount()
   const navigate = useNavigate()
 
-  const { addCoinAddress, setCoinAddresses, setCoinsDetails } = useContext(PostsContext);
-  console.log(theme)
+  const { themes, setAllContributions } = useContext(PostsContext);
+
   if (!activeAccount) {
     toast.error("Please connect your wallet");
     navigate("/collection");
   }
-  // const client = new LMStudioClient();
+
+  async function getThemeInfo(link) {
+    const url = link;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  }
+  
+  const getAllContributions = async () => {
+    try {
+      // Initialize provider and contract
+      const provider = new ethers.providers.JsonRpcProvider(import.meta.env.VITE_RPC_URL);
+      const contract = new ethers.Contract(contractAddress, abi, provider);
+  
+      // Call the getAllCoins function
+      const allContributions = await contract.getAllContributions();
+
+      // Map each theme to a promise that resolves to the formatted object
+      const formattedContents = await Promise.all(
+        allContributions.map(async (element) => {
+          const res = await getThemeInfo(element?.ipfsLink);
+          return {
+            id: BigNumber.from(element?.id._hex).toNumber(),
+            nftImg: res?.image,
+            theme:  BigNumber.from(element?.themeId._hex).toString(),
+            type: themes.find((item) => item?.id === BigNumber.from(element?.themeId._hex).toString())?.type,
+            title: res?.name,
+            description: res?.description,
+            approved: element?.approved,
+            creator: element?.creator,
+            content:res?.content,
+            date: BigNumber.from(element?.dateCreated._hex).toString(),
+          };
+        })
+      );
+
+
+      setAllContributions(formattedContents);
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
   
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -136,8 +179,9 @@ const CreatePost = ({type, theme}) => {
           contentUrl
         );
         await tx.wait();
+        getAllContributions();
         toast.success("Contribution created and pending admin approval!");
-        navigate("/dashboard")
+        navigate("/collection")
         setPublishing(false);
       } else {
         throw new Error("IPFS upload failed.");
@@ -150,42 +194,9 @@ const CreatePost = ({type, theme}) => {
   };
 
 
-  const confirmAnalyze = async () => {
-    setAiAnalyze(true);
-    try {
-      const response = await fetch("http://localhost:1234/api/v0/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemma-3-1b", // Replace with the model identifier from LM Studio
-          messages: [{ role: "user", content:`${content} Based on the blog post (content). Remove all grammatical errors and make it less flawed and more engaging. Just return the optimized content, no other text. Make sure to add needed tags to the content` }],
-          temperature: 0.7,
-        }),
-      });
-
-      const data = await response.json();
-      setOptimizedContent(data.choices[0].message.content);
-      setConfirmAnalyzeOpen(false);
-      setOptimizedContentOpen(true);
-      setAiAnalyze(false);
-    } catch (error) {
-      setAiAnalyze(false);
-      console.error("Error sending request to LM Studio:", error);
-      throw error;
-    }
-  };
-
-  const copyOptimizedContent = () => {
-    navigator.clipboard.writeText(optimizedContent);
-    toast.success("Optimized content copied to clipboard");
-  };
-
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 py-10 px-6 md:px-16">
-      <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-8 space-y-6">
+    <div className="min-h-screen py-10 px-6 md:px-16 flex mt-4">
+      <div className="max-w-4xl mx-auto bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-xl p-8 space-y-6">
         <h1 className="text-4xl font-extrabold text-gray-800 text-center">Collaborate and Earn</h1>
 
         {/* Title Input */}
@@ -200,7 +211,7 @@ const CreatePost = ({type, theme}) => {
 
 
         {/* Banner Image Upload */}
-        {theme.type !== "video" &&
+        {theme.type !== "clips" &&
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-600">{theme.type === "words" ? "Banner Image" : "Art Work"}</label>
             <label className="flex items-center gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-500">
@@ -222,9 +233,9 @@ const CreatePost = ({type, theme}) => {
             )}
           </div>
         }
-        {theme.type === "video" &&
+        {(theme.type === "clips") &&
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-600">{theme.type === "words" ? "Banner Image" : "Art Work"}</label>
+            <label className="block text-sm font-medium text-gray-600">Clip/Video</label>
             <label className="flex items-center gap-3 px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-500">
               <BiVideoPlus className="w-6 h-6 text-gray-500" />
               <span className="text-gray-700">Upload Clip</span>
@@ -314,6 +325,58 @@ const CreatePost = ({type, theme}) => {
         </div>
       </div>
 
+      <div className="w-[40%] min-h-screen bg-gradient-to-br from-white to-blue-50 rounded-md mt-4 shadow-lg p-4">
+      <div className='flex flex-col gap-4'>
+        <span>Theme Details</span>
+        <div className="mt-6 flex flex-col md:flex-row md:justify-between items-start md:items-center">
+          <div>
+            <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
+              <FaHashtag /> Theme: {theme?.theme}
+            </p>
+          </div>
+        </div>
+        
+        <div className="mt-6 flex flex-col md:flex-row md:justify-between items-start md:items-center">
+          <div className="mt-4 md:mt-0 flex flex-col gap-4">
+            <div className="flex gap-1">
+              <p className="text-gray-700 font-semibold flex items-center gap-1 justify-center">
+                <GiMoneyStack /> Tips - 
+              </p>
+              <p className="text-lg font-bold text-green-600">${ethers.utils.formatEther(theme?.amount)}</p>
+            </div>
+            <div className="">
+              <p className="text-gray-700 font-semibold flex items-center gap-1">
+                <MdDescription /> Description
+              </p>
+              <p className="text-sm font-medium mt-1">{theme?.description}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Token Economics */}
+        <div className="mt-6 gap-4 space-y-4">
+          <div className="bg-gray-100 p-4 rounded-xl w-full">
+            <p className="text-sm text-gray-500 flex items-center gap-1">
+              <BiCategory /> Category
+            </p>
+            <p className="text-xl font-bold text-gray-800">{theme?.category}</p>
+          </div>
+          <div className="bg-gray-100 p-4 rounded-xl w-full">
+            <p className="text-sm text-gray-500 flex items-center gap-1">
+              <MdPeople /> Total Collaborators
+            </p>
+            <p className="text-xl font-bold text-gray-800">{theme?.collaborators}</p>
+          </div>
+          <div className="bg-gray-100 p-4 rounded-xl w-full">
+            <p className="text-sm text-gray-500 flex items-center gap-1">
+              <MdPeople /> Maximum Collaborators
+            </p>
+            <p className="text-xl font-bold text-gray-800">{theme?.maxCollaborators}</p>
+          </div>
+        </div>
+      </div>
+      </div>
+
       {/* Preview Modal */}
       <Transition appear show={previewOpen} as={React.Fragment}>
         <Dialog as="div" className="relative z-50" onClose={() => setPreviewOpen(false)}>
@@ -365,156 +428,6 @@ const CreatePost = ({type, theme}) => {
         </Dialog>
       </Transition>
 
-      {/* Confirm AI Analyze Modal */}
-      <Transition appear show={confirmAnalyzeOpen} as={React.Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setConfirmAnalyzeOpen(false)}>
-          <Transition.Child
-            as={React.Fragment}
-            enter=""
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black opacity-40 backdrop-blur-sm" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 flex items-center justify-center p-6">
-            <Transition.Child
-              as={React.Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="bg-white rounded-2xl max-w-md w-full shadow-2xl p-6">
-                <Dialog.Title className="text-2xl font-bold mb-4 text-gray-800">Confirm AI Analysis</Dialog.Title>
-                <p className="text-gray-600 mb-6">Are you sure you want to proceed with AI analysis? This may take a few moments.</p>
-                <div className="flex justify-end gap-3">
-                  <button
-                    disabled={aiAnalyze}
-                    onClick={() => setConfirmAnalyzeOpen(false)}
-                    className="w-fit flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-center bg-gray-400 hover:opacity-90 text-white px-6 py-2 rounded-xl transition duration-300 shadow-md"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    disabled={aiAnalyze}
-                    onClick={confirmAnalyze}
-                    className="w-fit flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-center bg-[#9e74eb] hover:opacity-90 text-white px-6 py-2 rounded-xl transition duration-300 shadow-md"
-                  >
-                    {aiAnalyze ? (
-                      <VscLoading className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <>
-                        <span className="text-sm">Analyze</span>
-                      </>
-                    )}
-                    </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition>
-
-      {/* Optimized Content Modal */}
-      <Transition appear show={optimizedContentOpen} as={React.Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setOptimizedContentOpen(false)}>
-          <Transition.Child
-            as={React.Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black opacity-40 backdrop-blur-sm" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 flex items-center justify-center p-6">
-            <Transition.Child
-              as={React.Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="bg-white rounded-2xl max-w-4xl w-full shadow-2xl p-6">
-                <Dialog.Title className="text-2xl font-bold mb-4 text-center text-gray-800">Optimized Content</Dialog.Title>
-                <div
-                  className="prose max-w-none prose-blue prose-img:rounded-xl mb-6"
-                  dangerouslySetInnerHTML={{ __html: optimizedContent }}
-                />
-                <div className="flex justify-end gap-3">
-                  <button
-                    onClick={copyOptimizedContent}
-                    className="w-fit flex items-center gap-2 cursor-pointer text-center bg-[#9e74eb] hover:opacity-90 text-white px-6 py-3 rounded-xl transition duration-300 shadow-md"
-                  >
-                    Copy
-                  </button>
-                  <button
-                    onClick={() => setOptimizedContentOpen(false)}
-                    className="w-fit flex items-center gap-2 cursor-pointer text-center bg-gray-400 hover:opacity-90 text-white px-6 py-3 rounded-xl transition duration-300 shadow-md"
-                  >
-                    Close
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition>
-
-      {/* Prompt Register Modal */}
-      <Transition appear show={promptRegister} as={React.Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setPromptRegister(false)}>
-          <Transition.Child
-            as={React.Fragment}
-            enter=""
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black opacity-40 backdrop-blur-sm" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 flex items-center justify-center p-6">
-            <Transition.Child
-              as={React.Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="bg-white rounded-2xl max-w-4xl w-full shadow-2xl p-6">
-                <Dialog.Title className="text-2xl font-bold mb-4 text-center text-gray-800">No Subscription</Dialog.Title>
-                <div className="flex justify-center items-center">
-                  <p className="text-gray-600 mb-6">You are not subscribed to any plan. Please subscribe to a plan to publish a post.</p>
-                </div>
-                <div className="flex w-full gap-3">
-                  <button
-                    onClick={() => navigate("/#plans")}
-                    className="w-full gap-2 cursor-pointer text-center bg-[#9e74eb] hover:opacity-90 text-white px-6 py-3 rounded-xl transition duration-300 shadow-md"
-                  >
-                    Subscribe
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition>
     </div>
   );
 };

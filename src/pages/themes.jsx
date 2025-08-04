@@ -37,12 +37,14 @@ const Themes = () => {
                         <div className="w-full text-sm flex justify-between items-center">
                             <span className="font-bold text-gray-900">Themes (ArtWorks, Words, Clips)</span>
                             
+                            {activeAccount?.address.toLowerCase() === "0x097753B3EF40ca0676B8d95f59303AcC5f3f42cF".toLowerCase() &&
                             <div onClick={() => navigate("/create_theme")} className="w-full flex justify-end">
                                 <button className="w-fit flex items-center gap-2 cursor-pointer text-center bg-[#9e74eb] hover:opacity-90 text-white px-6 py-3 rounded-xl transition duration-300 shadow-md">
                                 <span className="text-sm">Create New Theme</span>
                                 <PlusIcon className="w-5 h-5" />
                                 </button>
                             </div>
+                            }
 
                         </div>
 

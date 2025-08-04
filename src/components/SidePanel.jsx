@@ -1,7 +1,7 @@
 import React from "react";
 import Profile from "../assets/icons/profile.svg";
 import { useNavigate } from "react-router-dom";
-import { formatDateMoment } from "./utils";
+import { formatDate, formatDateMoment } from "./utils";
 const SidePanel = ({ posts }) => {
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ const SidePanel = ({ posts }) => {
            alt="" className="w-10 h-10 rounded-full" />
             <div>
               <p className="text-sm text-gray-900">{post?.title.length > 20 ? post?.title.slice(0, 20) + "..." : post?.title}</p>
-              <p className="text-xs text-gray-500">{formatDateMoment(post?.date)}</p>
+              <p className="text-xs text-gray-500">{formatDate(post?.date)}</p>
             </div>
           </div>
           ))}

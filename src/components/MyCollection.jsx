@@ -12,16 +12,13 @@ const MyCollection = ({ classType }) => {
   const { forYouPosts } = useContext(PostsContext);
   const activeAccount = useActiveAccount();
   const navigate = useNavigate();
-  const [userContents, setUserContents] = useState(
-    forYouPosts.length > 0 && activeAccount?.address &&
-      forYouPosts.filter((it) => it.creator.toLowerCase() === activeAccount?.address.toLowerCase())
-    );
+  const [userContents, setUserContents] = useState(forYouPosts.filter((it) => it.creator === activeAccount?.address));
 
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 3000);
   }, [])
   
 
@@ -36,7 +33,7 @@ const MyCollection = ({ classType }) => {
     </div>
     )}
 
-  if (forYouPosts.length > 0 && !userContents.length && activeAccount?.address.toLowerCase() !== "0x097753B3EF40ca0676B8d95f59303AcC5f3f42cF".toLowerCase()) {
+  if (activeAccount?.address.toLowerCase() !== "0x097753B3EF40ca0676B8d95f59303AcC5f3f42cF".toLowerCase() && forYouPosts.filter((it) => it.creator === activeAccount?.address).length === 0) {
     return (
       <div>
       <div className="w-full bg-[#f6f2ff]">
@@ -74,7 +71,7 @@ const MyCollection = ({ classType }) => {
             {(forYouPosts.length > 0 && !loading) && (
             // Show filtered coin details
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
-              {forYouPosts.map((post, index) => (
+              {(activeAccount?.address.toLowerCase() !== "0x097753B3EF40ca0676B8d95f59303AcC5f3f42cF".toLowerCase() ? forYouPosts.filter((it) => it.creator === activeAccount?.address) : forYouPosts).map((post, index) => (
                 <NftCard
                 key={index}
                 id={post?.id}

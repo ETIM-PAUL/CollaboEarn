@@ -11,17 +11,25 @@ import { FaDollarSign, FaPen, FaVideo } from "react-icons/fa";
 import { GrGallery } from "react-icons/gr";
 import ThemeCard from "./ThemeCard";
 import { useNavigate } from "react-router-dom";
+import { ethers } from "ethers";
 
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const { forYouPosts, themes } = useContext(PostsContext);
+
+  const totalTips = themes.reduce((sum, theme) => {
+    // Convert each tip to a number (handles string, BigNumber, etc.)
+    const tipValue = Number(theme.amount);
+    return sum + (isNaN(tipValue) ? 0 : tipValue);
+  }, 0);
+
   const dashboad = [
     { title: "Total Words Content", value: forYouPosts.filter((item) => item?.type === "words")?.length ?? 0, positive:"false", change:"8.3", icon:<FaPen className="text-white-400 text-2xl" />},
     { title: "Total Art Content", value: forYouPosts.filter((item) => item?.type === "artworks")?.length ?? 0, positive:"true", change:"8.3", icon:<GrGallery className="text-white-400 text-2xl" />},
     { title: "Total Video Content", value: forYouPosts.filter((item) => item?.type === "video")?.length ?? 0, positive:"false", change:"8.3", icon:<FaVideo className="text-white-400 text-2xl" />},
-    { title: "Total Tips", value: "2", positive:"true", change:"8.3", icon:<FaDollarSign className="text-white-400 text-2xl" />}
+    { title: "Total Tips", value: ethers.utils.formatEther(totalTips.toString()), positive:"true", change:"8.3", icon:<span className="text-white-400 text-2xl">XTZ</span>}
   ]
 
   const SkeletonDashboard = () => (

@@ -8,23 +8,24 @@ import { GiMoneyStack } from 'react-icons/gi';
 import { MdDescription, MdPeople } from 'react-icons/md';
 import { BiCategory } from 'react-icons/bi';
 import { FaHashtag } from 'react-icons/fa';
-import { abi, contractAddress, formatDate } from './utils';
+import { abi, contractAddress, formatDate, ipfsToHttp } from './utils';
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import { Dialog, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
+import { useActiveAccount } from 'thirdweb/react';
 
 
 const BlogPostDetails = ({ post, theme }) => {
   const navigate = useNavigate();
   const { forYouPosts } = useContext(PostsContext);
-
+  const activeAccount = useActiveAccount();
   const [modal, setModal] = useState({
     show: false,
     action: null, // 'approve' or 'reject'
   });
   const [loading, setLoading] = useState(false);
-
+console.log(post)
   // Example contract functions
   const approveContribution = async (id) => {
     // Interact with contract here
@@ -69,10 +70,10 @@ const BlogPostDetails = ({ post, theme }) => {
 
   // Render content based on type
   let mainContent;
-  if (post?.type === "video") {
+  if (post?.type === "clips") {
     mainContent = (
       <video
-        src={post.content}
+        src={ipfsToHttp(post.content)}
         controls
         style={{ width: "100%", height:"300px", objectFit:"contain", borderRadius: "1.5rem", boxShadow: "0 2px 8px #0001" }}
       />
@@ -102,7 +103,7 @@ const BlogPostDetails = ({ post, theme }) => {
         {/* Banner or Main Content */}
         <div className="relative mt-4">
           {mainContent}
-          {post?.type !== "video" &&
+          {post?.type !== "clips" &&
             <div className="absolute rounded-b-3xl flex items-center justify-center top-0 bottom-0 left-0 right-0">
               <h1 className="text-3xl md:text-4xl text-black font-extrabold text-center drop-shadow-xl bg-white/90 p-6 rounded-xl">
                 {post?.title}
@@ -127,13 +128,22 @@ const BlogPostDetails = ({ post, theme }) => {
             </div>
 
             {/* Approve Button */}
-            {post?.approved === false &&
+            {(post?.approved === false && activeAccount?.address.toLowerCase() === "0x097753B3EF40ca0676B8d95f59303AcC5f3f42cF".toLowerCase()) &&
               <button
                 disabled={loading}
                 onClick={() => setModal({ show: true, action: 'approve' })}
                 className="w-fit bg-[#9e74eb] cursor-pointer hover:opacity-90 text-white p-2 mt-3 flex justify-center gap-2 items-center rounded-lg"
               >
                 <span className="font-semibold">Approve</span>
+              </button>
+            }
+
+            {(post?.approved === false) &&
+              <button
+                disabled={true}
+                className="w-fit cursor-not-allowed bg-[#9e74eb] hover:opacity-90 text-white p-2 mt-3 flex justify-center gap-2 items-center rounded-lg"
+              >
+                <span className="font-semibold">Pending Approval</span>
               </button>
             }
 
@@ -193,6 +203,12 @@ const BlogPostDetails = ({ post, theme }) => {
               <MdPeople /> Total Collaborators
             </p>
             <p className="text-xl font-bold text-gray-800">{theme?.collaborators}</p>
+          </div>
+          <div className="bg-gray-100 p-4 rounded-xl w-full">
+            <p className="text-sm text-gray-500 flex items-center gap-1">
+              <MdPeople /> Maximum Collaborators
+            </p>
+            <p className="text-xl font-bold text-gray-800">{theme?.maxCollaborators}</p>
           </div>
         </div>
       </div>

@@ -39,6 +39,8 @@ export const plans = [
 export const coinContract = "0x1CB7160E2Ed02aAFe8Ee98160460BFf4D2caBB31"
 export const contractAddress = "0xF77025Db69882AD1c7f18D2A1C5B8821C091916C"
 
+export const ipfsToHttp = (ipfsUrl) => ipfsUrl.replace('ipfs://', 'https://ipfs.io/ipfs/');
+
 export const groupedData = (data, categories) => {
     return data.reduce((acc, coin) => {
     const category = categories[coin.tokenUri];
