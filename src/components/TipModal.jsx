@@ -3,26 +3,16 @@ import { Dialog, Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { formatEther } from 'viem';
 import { ethers } from 'ethers';
-import { coinContract, contractAddress } from './utils';
+import { abi, coinContract, contractAddress } from './utils';
 
 const TipModal = ({post, isOpen, onClose, userCoinBalance }) => {
   const [amount, setAmount] = useState('');
   const [tipping, setTipping] = useState(false);
 
   const handleTip = async() => {
-    const abi = [
-      {
-        "constant": false,
-        "inputs": [
-          { "name": "_to", "type": "address" },
-          { "name": "_value", "type": "uint256" }
-        ],
-        "name": "transfer",
-        "outputs": [{ "name": "", "type": "bool" }],
-        "type": "function"
-      }
-    ];
-
+     // Request wallet connection
+     await window.ethereum.request({ method: 'eth_requestAccounts' });
+     
     // Initialize provider and signer
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -33,11 +23,10 @@ const TipModal = ({post, isOpen, onClose, userCoinBalance }) => {
     // Function to send ERC20 tokens
       try {
         setTipping(true);
-        // Convert amount to wei (assuming 18 decimals)
-        const amountInWei = ethers.utils.parseUnits(amount, 18);
-
         // Call the transfer function
-        const tx = await contract.tipCollaborator(post.id, amountInWei);
+        const tx = await contract.tipTheme(post?.theme, {
+          value: ethers.utils.parseEther(amount)
+        });
         console.log('Transaction sent:', tx.hash);
 
         // Wait for the transaction to be mined
@@ -102,7 +91,7 @@ const TipModal = ({post, isOpen, onClose, userCoinBalance }) => {
                 </div>
 
                 <p className="text-sm mt-4 text-gray-500 mt-1">
-                Your balance: {userCoinBalance ? userCoinBalance.displayValue : 0} {"ETH"}
+                Your balance: {userCoinBalance ? userCoinBalance : 0} {"XTZ"}
               </p>
 
                 <div className="mt-4 flex justify-end gap-2">

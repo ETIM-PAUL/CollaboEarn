@@ -8,6 +8,7 @@ import { clientThirdweb } from "../../client";
 import { FaBookReader, FaDollarSign, FaMoneyBill } from "react-icons/fa";
 import { GiEyeball, GiTakeMyMoney } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
+import { ethers } from 'ethers';
 
 
   const PostSkeleton = () => (
@@ -74,21 +75,18 @@ import { useNavigate } from "react-router-dom";
   };
 
   // Post Component
-  const Post = ({ post }) => {
+  const Post = ({ post, balance }) => {
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
     const [tipModal, setTipModal] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
 
     const activeAccount = useActiveAccount();
-    const activeChain = useActiveWalletChain();
     const navigate = useNavigate();
   
-    const { data: balance, isLoading } = useWalletBalance({
-      client:clientThirdweb,
-      chain:activeChain,
-      address: activeAccount?.address ?? "",
-    });
+
+    
+    
 
     const renderContent = () => {
       switch (post.type) {
@@ -225,6 +223,10 @@ import { useNavigate } from "react-router-dom";
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [balance, setBalance] = useState();
+    const activeAccount = useActiveAccount();
+
+
     const observer = useRef();
 
     const { approvedPosts:forYouPosts } = useContext(PostsContext);
@@ -265,6 +267,20 @@ import { useNavigate } from "react-router-dom";
       
       if (node) observer.current.observe(node);
     }, [loading, hasMore]);
+
+    const getBalance = async () => {
+      if (window.ethereum && activeAccount?.address) {
+      const provider = new ethers.providers.JsonRpcProvider(import.meta.env.VITE_RPC_URL);
+      const balanceFunds = await provider.getBalance(activeAccount?.address);
+      setBalance(ethers.utils.formatEther(balanceFunds))
+      }
+  
+    }
+
+    useEffect(() => {
+      getBalance()
+    }, [activeAccount?.address])
+
 
     // Load more posts when page changes
     useEffect(() => {
@@ -318,7 +334,7 @@ import { useNavigate } from "react-router-dom";
                 if (posts.length === index + 1) {
                   return (
                     <div ref={lastPostElementRef} key={post.id}>
-                      <Post post={post} />
+                      <Post post={post} balance={balance} />
                     </div>
                   );
                 } else {

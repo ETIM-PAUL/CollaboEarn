@@ -11,6 +11,7 @@ import { useConnectModal } from "thirdweb/react";
 import { clientThirdweb } from '../../client';
 import { useActiveWalletChain } from "thirdweb/react";
 import { etherlinkTestnet } from 'viem/chains';
+import { ethers } from 'ethers';
 
 const MyWallet = () => {
   const { connect } = useConnectModal();
@@ -18,13 +19,18 @@ const MyWallet = () => {
   const { disconnect } = useDisconnect();
   const activeChain = useActiveWalletChain();
   const wallet = useActiveWallet();
+  const [balance, setBalance] = useState();
 
 
-  const { data: balance, isLoading } = useWalletBalance({
-    client:clientThirdweb,
-    chain:activeChain,
-    address: activeAccount?.address,
-  });
+  const getBalance = async () => {
+    if (window.ethereum && activeAccount?.address) {
+    const provider = new ethers.providers.JsonRpcProvider(import.meta.env.VITE_RPC_URL);
+    const balanceFunds = await provider.getBalance(activeAccount?.address);
+    setBalance(ethers.utils.formatEther(balanceFunds))
+    }
+
+  }
+
 
 
   const handleCopy = () => {
@@ -51,6 +57,11 @@ const MyWallet = () => {
   //   setCoinBalance(balance);
   //   setIsProvideLiquidityModalOpen(true);
   // };
+
+  useEffect(() => {
+    getBalance()
+  }, [activeAccount])
+  
 
 
   return (
@@ -105,7 +116,7 @@ const MyWallet = () => {
                         <div>
                           <h3 className="text-md font-medium text-black">Your {balance?.symbol} Balance</h3>
                           <div className="text-3xl font-bold text-white mt-1">
-                            {balance?.displayValue} {balance?.symbol}
+                            {balance} XTZ
                           </div>
                         </div>
                         <Coins className="w-12 h-12 text-white" />

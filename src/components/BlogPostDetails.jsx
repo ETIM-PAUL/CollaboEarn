@@ -169,7 +169,7 @@ const BlogPostDetails = ({ post, theme }) => {
               <p className="text-gray-700 font-semibold flex items-center gap-1 justify-center">
                 <GiMoneyStack /> Tips - 
               </p>
-              <p className="text-lg font-bold text-green-600">${theme?.amount}</p>
+              <p className="text-lg font-bold text-green-600">${ethers.utils.formatEther(theme?.amount)}</p>
             </div>
             <div className="">
               <p className="text-gray-700 font-semibold flex items-center gap-1">
