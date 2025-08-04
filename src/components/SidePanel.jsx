@@ -15,7 +15,13 @@ const SidePanel = ({ posts }) => {
         <div className="flex flex-col gap-2">
           {posts?.sort((a, b) => Number(b.amount) - Number(a.amount))?.map((post) => (
           <div key={post?.id} className="flex items-center gap-2">
-          <img src={Profile} alt="" className="w-10 h-10" />
+          <img 
+          src={
+            (post?.type === "artworks" ? post?.content : post.nftImg).startsWith("ipfs://")
+              ? (post?.type === "artworks" ? post?.content : post.nftImg).replace("ipfs://", "https://ipfs.io/ipfs/")
+              : post.nftImg
+          }
+           alt="" className="w-10 h-10 rounded-full" />
             <div>
               <p className="text-sm text-gray-900">{post?.title.length > 20 ? post?.title.slice(0, 20) + "..." : post?.title}</p>
               <p className="text-xs text-gray-500">{formatDateMoment(post?.date)}</p>

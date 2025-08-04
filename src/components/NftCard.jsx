@@ -13,7 +13,11 @@ const NftCard = ({ ...props }) => {
   const navigate = useNavigate();
   return (
     <div className="py-2 gro mb-4 px-2 bg-white rounded-lg shadow relative">
-      <img src={props.nftImg} alt="" className="w-full h-48 object-cover" />
+      <img src={
+          (props?.type === "artworks" ? props?.content : props.nftImg).startsWith("ipfs://")
+            ? (props?.type === "artworks" ? props?.content : props.nftImg).replace("ipfs://", "https://ipfs.io/ipfs/")
+            : props.nftImg
+        } alt="" className="w-full h-48 object-cover" />
       <img
         src={loved ? props.loved : props.notLoved}
         alt=""
@@ -37,12 +41,12 @@ const NftCard = ({ ...props }) => {
 
             {props.view !== "dashboard" ?
               <div className="">
-                <span className="font-semibold text-sm text-gray-900">{props.theme.length > 10 ? props.theme.slice(0, 10) + "..." : props.theme}</span>
+                <span className="font-semibold text-sm text-gray-900">{props.type.length > 10 ? props.type.slice(0, 10) + "..." : props.type}</span>
               </div>
                 :
               <div className="w-full flex items-center gap-1 justify-end">
               <span className="font-semibold text-sm text-gray-900"><RiCurrencyFill/></span>
-              <span className="font-semibold text-sm text-gray-900">{props.amount} ETH</span>
+              <span className="font-semibold text-sm text-gray-900">{props.amount} XTZ</span>
               </div>
             }
 
@@ -52,7 +56,7 @@ const NftCard = ({ ...props }) => {
       {(props.view !== "dashboard" || props.view !== "themes") &&
       <div className="w-full flex items-center gap-1 justify-end">
         <span className="font-semibold text-sm text-gray-900"><RiCurrencyFill/></span>
-        <span className="font-semibold text-sm text-gray-900">{props.amount} ETH</span>
+        <span className="font-semibold text-sm text-gray-900">{props.amount} XTZ</span>
       </div>
      }
 

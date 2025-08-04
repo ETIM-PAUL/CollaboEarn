@@ -9,16 +9,18 @@ import { groupCoinsByCreator, groupedData } from "./utils";
 import { shortenAddress } from "thirdweb/utils";
 import { FaDollarSign, FaPen, FaVideo } from "react-icons/fa";
 import { GrGallery } from "react-icons/gr";
+import ThemeCard from "./ThemeCard";
+import { useNavigate } from "react-router-dom";
 
 
 const Dashboard = () => {
-  const [filter, setFilter] = useState("Art");
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const { forYouPosts } = useContext(PostsContext);
+  const { forYouPosts, themes } = useContext(PostsContext);
   const dashboad = [
-    { title: "Total Words Content", value: "10", positive:"false", change:"8.3", icon:<FaPen className="text-white-400 text-2xl" />},
-    { title: "Total Art Content", value: "5", positive:"true", change:"8.3", icon:<GrGallery className="text-white-400 text-2xl" />},
-    { title: "Total Video Content", value: "2", positive:"false", change:"8.3", icon:<FaVideo className="text-white-400 text-2xl" />},
+    { title: "Total Words Content", value: forYouPosts.filter((item) => item?.type === "words")?.length ?? 0, positive:"false", change:"8.3", icon:<FaPen className="text-white-400 text-2xl" />},
+    { title: "Total Art Content", value: forYouPosts.filter((item) => item?.type === "artworks")?.length ?? 0, positive:"true", change:"8.3", icon:<GrGallery className="text-white-400 text-2xl" />},
+    { title: "Total Video Content", value: forYouPosts.filter((item) => item?.type === "video")?.length ?? 0, positive:"false", change:"8.3", icon:<FaVideo className="text-white-400 text-2xl" />},
     { title: "Total Tips", value: "2", positive:"true", change:"8.3", icon:<FaDollarSign className="text-white-400 text-2xl" />}
   ]
 
@@ -161,9 +163,9 @@ const Dashboard = () => {
                 {data?.icon && <span>{data?.icon}</span>}
                 <p className="text-3xl font-extrabold tracking-tight">{data?.value}</p>
               </div>
-              <span className={`text-sm flex items-center gap-1 ${data?.positive ? 'text-green-400' : 'text-red-400'}`}
+              {/* <span className={`text-sm flex items-center gap-1 ${data?.positive ? 'text-green-400' : 'text-red-400'}`}
                 >{data?.positive ? <span className="animate-bounce">▲</span> : <span className="animate-bounce">▼</span>} {data?.change} since last month
-              </span>
+              </span> */}
             </div>
             ))}
           </div>
@@ -172,22 +174,23 @@ const Dashboard = () => {
         <section className="p-3">
           <div className="w-full text-sm flex justify-between">
             <span className="font-bold text-gray-900">Top Themes</span>
-            <span className="text-blue-500 mr-2 cursor-pointer">See more</span>
+            <span onClick={()=>navigate("/themes")} className="text-blue-500 mr-2 cursor-pointer">See more</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-            {forYouPosts?.map((post,index) => (
-            <NftCard
+            {themes?.map((theme,index) => (
+            <ThemeCard
               key={index}
-              nftImg={post?.nftImg}
-              category={post?.category}
-              title={post?.title}
-              view="dashboard"
-              theme={post?.theme}
-              amount={post?.amount}
+              id={theme?.id}
+              nftImg={theme?.nftImg}
+              category={theme?.category}
+              title={theme?.title}
+              theme={theme?.theme}
+              amount={theme?.amount}
               loved={Loved}
               notLoved={Heart}
-              type={post?.type}
+              type={theme?.type}
+              collaborators={theme?.collaborators}
             />
             ))}
           </div>

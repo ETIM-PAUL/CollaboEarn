@@ -12,12 +12,41 @@ const MyCollection = ({ classType }) => {
   const { forYouPosts } = useContext(PostsContext);
   const activeAccount = useActiveAccount();
   const navigate = useNavigate();
+  const [userContents, setUserContents] = useState(
+    forYouPosts.length > 0 && activeAccount?.address &&
+      forYouPosts.filter((it) => it.creator.toLowerCase() === activeAccount?.address.toLowerCase())
+    );
+
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
   }, [])
+  
+
+
+  if (!activeAccount?.address) {
+    return (
+      <div>
+      <div className="w-full bg-[#f6f2ff]">
+        <div className="w-full bg-white text-center h-full my-auto min-h-screen mt-4">
+          <span className='text-black block text-2xl pt-10'>Wallet Not Connected</span>
+        </div>
+      </div>
+    </div>
+    )}
+
+  if (forYouPosts.length > 0 && userContents.length === 0) {
+    return (
+      <div>
+      <div className="w-full bg-[#f6f2ff]">
+        <div className="w-full bg-white text-center h-full my-auto min-h-screen mt-4">
+          <span className='text-black block text-2xl pt-10'>No Collaboration Found</span>
+        </div>
+      </div>
+    </div>
+    )}
   
 
 
@@ -54,6 +83,7 @@ const MyCollection = ({ classType }) => {
                 category={post?.category}
                 title={post?.title}
                 theme={post?.theme}
+                content={post?.content}
                 amount={post?.amount}
                 loved={Loved}
                 notLoved={Heart}

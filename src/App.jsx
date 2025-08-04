@@ -75,7 +75,7 @@ function App() {
   
       // Call the getAllCoins function
       const allContributions = await contract.getAllContributions();
-      console.log("allContributions", allContributions)
+
       // Map each theme to a promise that resolves to the formatted object
       const formattedContents = await Promise.all(
         allContributions.map(async (element) => {
