@@ -2,15 +2,15 @@
 
 **CollaboEarn** is a collaborative content creation platform where **writers, illustrators, video creators**, web3 community and **fans** co-create interactive content around admin-created themes. Each contribution to a theme earns royalties from user tips, making collaboration both creative and rewarding.
 
-Contributions (words, artworks, clips) are all stored on IPFS (and then the ipfs uri is stored onchain) helping reduce the size of the stored data onchain.
+Contributions (words, artworks, clips) are all stored on IPFS, this helps to reduce the size of the stored data onchain.
 
 ---
 
 ## Key Features
 
 - **Admin-driven Themes**  
-  Admins can create themed prompts (e.g. *"Future of AI"*) that support:
-  - **Articles** (words)
+  Admins can create themed prompts (e.g. *"Future of AI"*) that supports either:
+  - **Words** (Articles)
   - **Artworks**
   - **Videos**
 
