@@ -1,10 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SideBar from '../components/SideBar'
 import TopHeader from '../components/TopHeader'
-import { Copy, Wallet, Network, Coins } from "lucide-react";
-import { PostsContext } from '../context/PostsContext';
-import TransferModal from '../components/TransferModal';
-import ProvideLiquidityModal from '../components/ProvideLiquidityModal';
+import { Wallet, Network, Coins } from "lucide-react";
 import { useActiveAccount, useWalletBalance } from "thirdweb/react";
 import { useDisconnect, useActiveWallet } from "thirdweb/react";
 import { useConnectModal } from "thirdweb/react";

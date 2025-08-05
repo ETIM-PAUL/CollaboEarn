@@ -6,19 +6,10 @@ import App from './App.jsx'
 import { PostsProvider } from './context/PostsContext'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { WagmiProvider, createConfig, http } from 'wagmi'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { base, baseSepolia, etherlinkTestnet } from 'wagmi/chains'
-import { Web3Modal } from '@web3modal/react'
-import { createWeb3Modal } from '@web3modal/wagmi/react'
-import { setApiKey } from "@zoralabs/coins-sdk";
 import { ThirdwebProvider } from "thirdweb/react";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { AutoConnect } from "thirdweb/react";
 import { clientThirdweb } from '../client';
-
-
-setApiKey(import.meta.env.VITE_ZORO_KEY);
 
  
 // wallets used in your app
