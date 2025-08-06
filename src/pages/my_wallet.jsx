@@ -25,7 +25,6 @@ const MyWallet = () => {
     const balanceFunds = await provider.getBalance(activeAccount?.address);
     setBalance(ethers.utils.formatEther(balanceFunds))
     }
-
   }
 
   const handleCopy = () => {
